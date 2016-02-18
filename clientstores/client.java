@@ -1,22 +1,21 @@
-package client;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.security.KeyStore;
-
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
+import java.net.*;
+import java.io.*;
+import javax.net.ssl.*;
 import javax.security.cert.X509Certificate;
+import java.security.KeyStore;
+import java.security.cert.*;
 
-public class Client {
-	public static void main(String[] args) throws Exception {
+/*
+ * This example shows how to set up a key manager to perform client
+ * authentication.
+ *
+ * This program assumes that the client is not inside a firewall.
+ * The application can be modified to connect to a server outside
+ * the firewall by following SSLSocketClientWithTunneling.java.
+ */
+public class client {
+
+    public static void main(String[] args) throws Exception {
         String host = null;
         int port = -1;
         for (int i = 0; i < args.length; i++) {
@@ -42,22 +41,17 @@ public class Client {
                 KeyStore ts = KeyStore.getInstance("JKS");
                 KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
                 TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-               
                 SSLContext ctx = SSLContext.getInstance("TLS");
-                ks.load(new FileInputStream("clientstores/clientkeystore"), password);  // keystore password (storepass)
-				ts.load(new FileInputStream("clientstores/clienttruststore"), password); // truststore password (storepass);
+                ks.load(new FileInputStream("clientkeystore"), password);  // keystore password (storepass)
+				ts.load(new FileInputStream("clienttruststore"), password); // truststore password (storepass);
 				kmf.init(ks, password); // user password (keypass)
 				tmf.init(ts); // keystore can be used as truststore here
 				ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
                 factory = ctx.getSocketFactory();
-                
             } catch (Exception e) {
-
                 throw new IOException(e.getMessage());
             }
-      
             SSLSocket socket = (SSLSocket)factory.createSocket(host, port);
-         	System.out.println("i has the no socket");
             System.out.println("\nsocket before handshake:\n" + socket + "\n");
 
             /*
@@ -71,7 +65,11 @@ public class Client {
             SSLSession session = socket.getSession();
             X509Certificate cert = (X509Certificate)session.getPeerCertificateChain()[0];
             String subject = cert.getSubjectDN().getName();
+            String issuer = cert.getIssuerDN().getName();
+            int serialNo = cert.getSerialNumber().intValue();
             System.out.println("certificate name (subject DN field) on certificate received from server:\n" + subject + "\n");
+            System.out.println("Certificate Issuer: " + issuer);
+            System.out.println("Certificate Serial Number: " + serialNo);
             System.out.println("socket after handshake:\n" + socket + "\n");
             System.out.println("secure connection established\n\n");
 
@@ -102,4 +100,3 @@ public class Client {
     }
 
 }
-

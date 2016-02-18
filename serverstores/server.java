@@ -1,5 +1,3 @@
-package server;
-
 import java.io.*;
 import java.net.*;
 import java.security.KeyStore;
@@ -7,11 +5,11 @@ import javax.net.*;
 import javax.net.ssl.*;
 import javax.security.cert.X509Certificate;
 
-public class Server implements Runnable {
+public class server implements Runnable {
     private ServerSocket serverSocket = null;
     private static int numConnectedClients = 0;
 
-    public Server(ServerSocket ss) throws IOException {
+    public server(ServerSocket ss) throws IOException {
         serverSocket = ss;
         newListener();
     }
@@ -23,32 +21,41 @@ public class Server implements Runnable {
             SSLSession session = socket.getSession();
             X509Certificate cert = (X509Certificate)session.getPeerCertificateChain()[0];
             String subject = cert.getSubjectDN().getName();
-            String[] name = subject.split(",");
+            String issuer = cert.getIssuerDN().getName();
+            int serialNo = cert.getSerialNumber().intValue();
     	    numConnectedClients++;
             System.out.println("client connected");
-            System.out.println("client name (cert subject DN field): " + name[0]);
+            System.out.println("certificate name (subject DN field) on certificate received from server:\n" + subject + "\n");
+            System.out.println("Certificate Issuer: " + issuer);
+            System.out.println("Certificate Serial Number: " + serialNo);
             System.out.println(numConnectedClients + " concurrent connection(s)\n");
 
             PrintWriter out = null;
             BufferedReader in = null;
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			close(socket, out, in);
+
+            String clientMsg = null;
+            while ((clientMsg = in.readLine()) != null) {
+			    String rev = new StringBuilder(clientMsg).reverse().toString();
+                System.out.println("received '" + clientMsg + "' from client");
+                System.out.print("sending '" + rev + "' to client...");
+				out.println(rev);
+				out.flush();
+                System.out.println("done\n");
+			}
+			in.close();
+			out.close();
+			socket.close();
+    	    numConnectedClients--;
+            System.out.println("client disconnected");
+            System.out.println(numConnectedClients + " concurrent connection(s)\n");
 		} catch (IOException e) {
             System.out.println("Client died: " + e.getMessage());
             e.printStackTrace();
             return;
         }
     }
-
-	private void close(SSLSocket socket, PrintWriter out, BufferedReader in) throws IOException {
-		in.close();
-		out.close();
-		socket.close();
-		numConnectedClients--;
-		System.out.println("client disconnected");
-		System.out.println(numConnectedClients + " concurrent connection(s)\n");
-	}
 
     private void newListener() { (new Thread(this)).start(); } // calls run()
 
@@ -63,7 +70,7 @@ public class Server implements Runnable {
             ServerSocketFactory ssf = getServerSocketFactory(type);
             ServerSocket ss = ssf.createServerSocket(port);
             ((SSLServerSocket)ss).setNeedClientAuth(true); // enables client authentication
-            new Server(ss);
+            new server(ss);
         } catch (IOException e) {
             System.out.println("Unable to start Server: " + e.getMessage());
             e.printStackTrace();
@@ -81,8 +88,8 @@ public class Server implements Runnable {
 				KeyStore ts = KeyStore.getInstance("JKS");
                 char[] password = "password".toCharArray();
 
-                ks.load(new FileInputStream("serverstores/serverkeystore"), password);  // keystore password (storepass)
-                ts.load(new FileInputStream("serverstores/servertruststore"), password); // truststore password (storepass)
+                ks.load(new FileInputStream("serverkeystore"), password);  // keystore password (storepass)
+                ts.load(new FileInputStream("servertruststore"), password); // truststore password (storepass)
                 kmf.init(ks, password); // certificate password (keypass)
                 tmf.init(ts);  // possible to use keystore as truststore here
                 ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
@@ -97,3 +104,4 @@ public class Server implements Runnable {
         return null;
     }
 }
+
