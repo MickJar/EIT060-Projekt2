@@ -1,6 +1,6 @@
 package staff;
 
-public class StaffMember {
+public class StaffMember implements Comparable{
 	private int id;
 	private String title;
 
@@ -11,6 +11,12 @@ public class StaffMember {
 
 	public String getTitle() {
 		return title;
+	}
+
+	@Override
+	public int compareTo(Object arg0) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
