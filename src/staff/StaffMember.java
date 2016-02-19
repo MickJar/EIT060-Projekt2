@@ -14,7 +14,7 @@ public class StaffMember implements Comparable{
 	}
 
 	@Override
-	public int compareTo(Object arg0) {
+	public int compareTo(StaffMember sm) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
