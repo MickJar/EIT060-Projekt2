@@ -19,6 +19,9 @@ public class Patient extends StaffMember {
 	public void deleteJournal() {
 		journal = new Journal();
 	}
-
+	
+	public Journal getJournal() {
+		return journal;
+	}
 
 }
