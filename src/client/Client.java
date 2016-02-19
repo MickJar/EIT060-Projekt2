@@ -33,11 +33,16 @@ public class Client {
             System.out.println("USAGE: java client host port");
             System.exit(-1);
         }
-
+        String[] msg = new String[2];
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        System.out.print("Enter Login:");
+        msg[0] = read.readLine();
+        System.out.println("Enter Password:");
+        msg[1] = read.readLine();
         try { /* set up a key manager for client authentication */
             SSLSocketFactory factory = null;
             try {
-                char[] password = "password".toCharArray();
+                char[] password = msg[1].toCharArray();
                 KeyStore ks = KeyStore.getInstance("JKS");
                 KeyStore ts = KeyStore.getInstance("JKS");
                 KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
@@ -75,22 +80,20 @@ public class Client {
             System.out.println("socket after handshake:\n" + socket + "\n");
             System.out.println("secure connection established\n\n");
 
-            BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+            
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String msg;
+
+			System.out.println("Sending username...");
+			out.println(msg[0]);
 			for (;;) {
-                System.out.print(">");
-                msg = read.readLine();
-                if (msg.equalsIgnoreCase("quit")) {
+				
+                msg[0] = read.readLine();
+				if (msg[0].equalsIgnoreCase("quit")) {
 				    break;
 				}
-                System.out.print("sending '" + msg + "' to server...");
-                out.println(msg);
                 out.flush();
-                System.out.println("done");
-
-                System.out.println("received '" + in.readLine() + "' from server\n");
+                
             }
             in.close();
 			out.close();

@@ -19,9 +19,19 @@ public class StaffMember implements Comparable{
 	public String getTitle() {
 		return title;
 	}
+<<<<<<< HEAD
 	
 	public String getId() {
 		return id;
+=======
+
+	@Override
+	public int compareTo(Object o) {
+		if(this.getClass() == o.getClass()){
+			return 1;
+		}
+		return 0;
+>>>>>>> origin/master
 	}
 	
 	public Division getDivision() {
