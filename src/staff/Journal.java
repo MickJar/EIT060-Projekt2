@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 public class Journal {
 	private ArrayList<JournalEntry> records;
+	private int id;
 	
 
-	public Journal() {
+	public Journal(int id) {
 		records = new ArrayList<JournalEntry>();
+		this.id = id;
 	}
 
 	public void addEntry(String entry) {
@@ -16,6 +18,10 @@ public class Journal {
 
 	public ArrayList<JournalEntry> getRecords() {
 		return records;
+	}
+	
+	public int getId(){
+		return id;
 	}
 
 }

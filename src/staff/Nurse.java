@@ -27,11 +27,4 @@ public class Nurse extends StaffMember {
 		}
 	}
 
-	public void AddRecord(Patient pat, String rec) {
-		if (patients.contains(pat)) {
-			pat.appendJournal(rec);
-		}
-	
-	}
-
 }

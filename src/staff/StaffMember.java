@@ -1,14 +1,20 @@
 package staff;
 
-public class StaffMember implements Comparable {
+import server.JournalDatabase;
+
+public abstract class StaffMember implements Comparable {
 	private String id;
 	private String title;
 	private String name;
 	private Division div;
+	private static int idCounter = 1;
+	private JournalDatabase jb;
 
 	public StaffMember(String name, Division div) {
 		this.name = name;
 		this.div = div;
+		id = Integer.toString(idCounter);
+		idCounter++;
 
 	}
 
@@ -35,6 +41,17 @@ public class StaffMember implements Comparable {
 		}
 		return 0;
 
+	}
+	
+	public Journal getJournal(int id) {
+		return jb.getJournal(id);
+	}
+	
+	public void deleteJournal(int id) {
+	}
+	
+	public void appendJournal(int id, String text) {
+		
 	}
 
 
