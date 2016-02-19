@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 public class Doctor extends StaffMember {
 
-
+	private final boolean readAccess = true;
+	
 	private final String TITLE = "Doctor";
 	private ArrayList<Patient> patients;
 	private static int doctorIdCounter = 1;
