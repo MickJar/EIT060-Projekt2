@@ -2,25 +2,23 @@ package staff;
 
 import java.util.ArrayList;
 
-public class Patient {
+public class Patient extends StaffMember {
+	private final String TITLE = "Patient";
 	private Journal journal;
-	private int id;
-	private String name;
-	private static int patientIdCounter = 1;
 
-	public Patient(String name) {
+	public Patient(String name, Division div) {
+		super(name, div);
 		journal = new Journal();
-		this.name = name;
-		this.id = patientIdCounter;
-		patientIdCounter++;
+
+	}
+	
+	public void appendJournal(String entry) {
+		journal.addEntry(entry);
 	}
 
 	public void deleteJournal() {
 		journal = new Journal();
 	}
-	
-	public int getId(){
-		return id;
-	}
+
 
 }
