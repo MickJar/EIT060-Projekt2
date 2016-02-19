@@ -3,20 +3,29 @@ package server;
 import java.io.*;
 import java.net.*;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+
 import javax.net.*;
 import javax.net.ssl.*;
+import javax.security.cert.Certificate;
 import javax.security.cert.X509Certificate;
 
 public class Server implements Runnable {
     private ServerSocket serverSocket = null;
     private static int numConnectedClients = 0;
-
+    private KeyStore keystore;
     public Server(ServerSocket ss) throws IOException {
         serverSocket = ss;
         newListener();
+     
+        
+
     }
 
-    public void run() {
+
+	public void run() {
         try {
             SSLSocket socket=(SSLSocket)serverSocket.accept();
             newListener();
@@ -29,12 +38,16 @@ public class Server implements Runnable {
             System.out.println("client name (cert subject DN field): " + name[0]);
             System.out.println(numConnectedClients + " concurrent connection(s)\n");
 
-            PrintWriter out = null;
-            BufferedReader in = null;
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String clientMsg = null;
+            
+            while((clientMsg = in.readLine()) != null){
+            
+            	   
+            }
 			close(socket, out, in);
-		} catch (IOException e) {
+		} catch (Exception e) {
             System.out.println("Client died: " + e.getMessage());
             e.printStackTrace();
             return;
@@ -69,6 +82,23 @@ public class Server implements Runnable {
             e.printStackTrace();
         }
     }
+    private KeyStore getKeyStore(String Id) {
+    	try{
+    	  KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+    	  KeyStore ks = KeyStore.getInstance("JKS");
+    	  char[] password = "password".toCharArray();
+    	  ks.load(new FileInputStream("serverstores/" + Id), password);
+       	  kmf.init(ks, password);
+       	  
+       	  return ks;
+    	  }catch(Exception e){
+    		  System.err.println("Could not find keystore");
+    		  e.printStackTrace();
+    		  return null;
+    	  }
+ 
+	}
+
 
     private static ServerSocketFactory getServerSocketFactory(String type) {
         if (type.equals("TLS")) {
