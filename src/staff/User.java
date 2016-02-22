@@ -54,5 +54,10 @@ public abstract class User implements Comparable {
 		
 	}
 
+	public char[] options() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

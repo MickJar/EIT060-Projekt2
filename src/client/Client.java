@@ -35,7 +35,7 @@ public class Client {
         }
         String[] msg = new String[2];
         BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Enter Login:");
+        System.out.print("Enter Username:");
         msg[0] = read.readLine();
         System.out.println("Enter Password:");
         msg[1] = read.readLine();
@@ -49,7 +49,7 @@ public class Client {
                 TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
                
                 SSLContext ctx = SSLContext.getInstance("TLS");
-                ks.load(new FileInputStream("clientstores/" + msg[0]), password);  // keystore password (storepass)
+                ks.load(new FileInputStream("clientstores/" + msg[0] + ".jks"), password);  // keystore password (storepass)
 				ts.load(new FileInputStream("clientstores/clienttruststore"), "password".toCharArray()); // truststore password (storepass);
 				kmf.init(ks, password); // user password (keypass)
 				tmf.init(ts); // keystore can be used as truststore here
@@ -86,8 +86,12 @@ public class Client {
 
 			System.out.println("Sending username...");
 			out.println(msg[0]);
-			for (;;) {
-				
+			while(socket.isConnected()) {
+				String input;
+				while (!(input = in.readLine()).equals("ENDOFMSG")){
+				System.out.println(input);
+				}
+				System.out.println(">");
                 msg[0] = read.readLine();
 				if (msg[0].equalsIgnoreCase("quit")) {
 				    break;

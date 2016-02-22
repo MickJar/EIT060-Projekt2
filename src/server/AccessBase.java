@@ -17,13 +17,17 @@ public class AccessBase {
 	}
 
 	public User getUser(BigInteger Biggie) {
+		if(userDatabase.containsKey(Biggie)){
+			return null;
+		}
 		return userDatabase.get(Biggie);
 	}
 
-	public void createUser(BigInteger Biggie, User staffMember) throws Exception {
+	public User createUser(BigInteger Biggie, User staffMember) throws Exception {
 
 		if (userDatabase.get(Biggie) == null) {
 			userDatabase.put(Biggie, staffMember);
+			return staffMember;
 		} else {
 			throw new Exception();
 		}

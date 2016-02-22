@@ -5,9 +5,14 @@ import java.util.ArrayList;
 public class Patient extends User {
 	private final String TITLE = "Patient";
 
-	public Patient(int id, String name, Division div) {
+	public Patient(String name, Division div) {
 		super(name, div);
 
+	}
+	
+	public char[] options(){
+		char[] output = "Press 1 to list records".toCharArray();
+		return output;
 	}
 
 }

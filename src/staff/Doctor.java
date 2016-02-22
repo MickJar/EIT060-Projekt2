@@ -29,8 +29,8 @@ public class Doctor extends User {
 		return null;
 	}
 
-	public void newPatient(int id, String name, Division div) {
-		patients.add(new Patient(id, name, div));
+	public void newPatient(String name, Division div) {
+		patients.add(new Patient(name, div));
 	}
 
 	public void addPatient(Patient pat) {
@@ -48,6 +48,10 @@ public class Doctor extends User {
 	public void appendJournal(int id, String text) {
 		
 		
+	}
+	public char[] options(){
+		char[] output = "Press 1 to list patient records \n Press 2 to list division records \n Press 3 to enter new patient record".toCharArray();
+		return output;
 	}
 
 }

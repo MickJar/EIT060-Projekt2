@@ -26,5 +26,9 @@ public class Nurse extends User {
 			patients.remove(pat);
 		}
 	}
+	public char[] options(){
+		char[] output = "Press 1 to list patient records \n Press 2 to list division records".toCharArray();
+		return output;
+	}
 
 }
