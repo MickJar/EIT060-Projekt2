@@ -7,35 +7,32 @@ public class Doctor extends User {
 	private final boolean readAccess = true;
 
 	private final String TITLE = "Doctor";
-	private ArrayList<Patient> patients;
+	private ArrayList<String> patients;
 	private static int doctorIdCounter = 1;
 
 	public Doctor(String name, Division div) {
 		super(name, div);
-		patients = new ArrayList<Patient>();
+		patients = new ArrayList<String>();
 
 	}
 
-	public ArrayList<Patient> getPatients() {
+	public ArrayList<String> getPatients() {
 		return patients;
 	}
 
-	public Patient getPatient(String id) {
-		for (int i = 0; i < patients.size(); i++) {
-			if (id.compareTo(patients.get(i).getId()) == 0) {
-				return patients.get(i);
-			}
-		}
-		return null;
+	public Boolean getPatient(String id) {
+		return patients.contains(id);
+		
 	}
 
-	public void newPatient(String name, Division div) {
-		patients.add(new Patient(name, div));
+	public void newPatient(String id) {
+		patients.add(id);
+		
 	}
 
 	public void addPatient(Patient pat) {
 		if (!patients.contains(pat)) {
-			patients.add(pat);
+			patients.add(pat.getId());
 		}
 	}
 

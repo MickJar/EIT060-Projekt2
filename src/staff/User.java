@@ -13,8 +13,7 @@ public abstract class User implements Comparable {
 	public User(String name, Division div) {
 		this.name = name;
 		this.div = div;
-		id = Integer.toString(idCounter);
-		idCounter++;
+		
 
 	}
 
@@ -25,8 +24,12 @@ public abstract class User implements Comparable {
 	public String getTitle() {
 		return title;
 	}
-
-	public String getId() {
+	public String getId(){
+		return id;
+	}
+	public String createPatientId() {
+		idCounter++;
+		id = Integer.toString(idCounter);
 		return id;
 	}
 

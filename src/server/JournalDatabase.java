@@ -5,16 +5,16 @@ import java.util.HashMap;
 import staff.Journal;
 
 public class JournalDatabase {
-	private HashMap<Integer, Journal> journals;
+	private HashMap<String, Journal> journals;
 
 	public JournalDatabase() {
-		journals = new HashMap<Integer, Journal>();
+		journals = new HashMap<String, Journal>();
 	}
 
 	public Journal getJournal(int id) {
 		return journals.get(id);
 	}
-	public void put(int id, Journal journal){
+	public void put(String id, Journal journal){
 		journals.put(id,journal);
 	}
 	
