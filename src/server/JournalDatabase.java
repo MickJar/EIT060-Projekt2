@@ -14,4 +14,7 @@ public class JournalDatabase {
 	public Journal getJournal(int id) {
 		return journals.get(id);
 	}
+	public void put(int id, Journal journal){
+		journals.put(id,journal);
+	}
 }

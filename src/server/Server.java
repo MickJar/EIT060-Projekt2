@@ -13,6 +13,8 @@ import javax.security.cert.Certificate;
 import javax.security.cert.X509Certificate;
 
 public class Server implements Runnable {
+	private AccessBase userList = new AccessBase();
+	private JournalDatabase jd = new JournalDatabase();
     private ServerSocket serverSocket = null;
     private static int numConnectedClients = 0;
     private KeyStore keystore;
@@ -31,8 +33,17 @@ public class Server implements Runnable {
             newListener();
             SSLSession session = socket.getSession();
             X509Certificate cert = (X509Certificate)session.getPeerCertificateChain()[0];
+            java.security.cert.Certificate aliasCert = session.getPeerCertificates()[0];
             String subject = cert.getSubjectDN().getName();
             String[] name = subject.split(",");
+            String clientName = name[0];
+            clientName = clientName.substring(3);
+            String clientClass = name[1];
+            clientClass = clientClass.substring(4);
+            String clientDivision = name[2];
+            clientDivision = clientDivision.substring(3);
+            String Id = name[3];
+            Id = Id.substring(3);
     	    numConnectedClients++;
             System.out.println("client connected");
             System.out.println("client name (cert subject DN field): " + name[0]);
@@ -40,10 +51,13 @@ public class Server implements Runnable {
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String clientMsg = null;
             
+            System.out.println(clientClass + " " + clientName + " " + clientDivision +" " + Id);
+
+//            userList. 
+            String clientMsg = "";
             while((clientMsg = in.readLine()) != null){
-            
+            	
             	   
             }
 			close(socket, out, in);
