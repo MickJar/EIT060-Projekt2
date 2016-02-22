@@ -39,70 +39,68 @@ public class Server implements Runnable {
 	}
 
 	public void run() {
-        try {
-            SSLSocket socket=(SSLSocket)serverSocket.accept();
-            newListener();
-            SSLSession session = socket.getSession();
-            X509Certificate cert = (X509Certificate)session.getPeerCertificateChain()[0];
-            java.security.cert.Certificate aliasCert = session.getPeerCertificates()[0];
-            String subject = cert.getSubjectDN().getName();
-            String[] name = subject.split(",");
-            String clientName = name[0];
-            clientName = clientName.substring(3);
-            String clientClass = name[1];
-            clientClass = clientClass.substring(4);
-            String clientDivision = name[2];
-            clientDivision = clientDivision.substring(3);
-            String Id = name[3];
-            Id = Id.substring(3);
-    	    numConnectedClients++;
-            System.out.println("client connected");
-            System.out.println("client name (cert subject DN field): " + name[0]);
-            System.out.println(numConnectedClients + " concurrent connection(s)\n");
+		try {
+			SSLSocket socket = (SSLSocket) serverSocket.accept();
+			newListener();
+			SSLSession session = socket.getSession();
+			X509Certificate cert = (X509Certificate) session.getPeerCertificateChain()[0];
+			java.security.cert.Certificate aliasCert = session.getPeerCertificates()[0];
+			String subject = cert.getSubjectDN().getName();
+			String[] name = subject.split(",");
+			String clientName = name[0];
+			clientName = clientName.substring(3);
+			String clientClass = name[1];
+			clientClass = clientClass.substring(4);
+			String clientDivision = name[2];
+			clientDivision = clientDivision.substring(3);
+			numConnectedClients++;
+			System.out.println("client connected");
+			System.out.println("client name (cert subject DN field): " + name[0]);
+			System.out.println(numConnectedClients + " concurrent connection(s)\n");
 
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            
-            System.out.println(clientClass + " " + clientName + " " + clientDivision +" " + Id);
+			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-//            userList. 
-            String clientMsg = "";
-            User user;
-            if((user = userList.getUser(cert.getSerialNumber())) == null){
-            	User newUser;
-            	switch (clientClass){
-            	case "D":
-            		newUser = new Doctor(clientName, new Division(clientDivision));
-            		break;
-            	case "N":
+			System.out.println(clientClass + " " + clientName + " " + clientDivision);
 
-            		newUser = new Nurse(clientName, new Division(clientDivision));
-            		break;
-            	case "P":
-            		newUser = new Patient(clientName, new Division(clientDivision));
-            		break;
-            	case "G":
-            		newUser = new GovAgency();
-            		break;
-            	default:
-            		newUser = null;
-            		break;
-            	}
-            	user = userList.createUser(cert.getSerialNumber(), newUser);
-            }
-            while((clientMsg = in.readLine()) != null){
-            	
-            	out.println(user.options());
-            	out.println("ENDOFMSG".toCharArray());
-            	   
-            }
+			// userList.
+			String clientMsg = "";
+			User user;
+			if ((user = userList.getUser(cert.getSerialNumber())) == null) {
+				User newUser;
+				switch (clientClass) {
+				case "D":
+					newUser = new Doctor(clientName, new Division(clientDivision));
+					break;
+				case "N":
+
+					newUser = new Nurse(clientName, new Division(clientDivision));
+					break;
+				case "P":
+					newUser = new Patient(clientName, new Division(clientDivision));
+					break;
+				case "G":
+					newUser = new GovAgency();
+					break;
+				default:
+					newUser = null;
+					break;
+				}
+				user = userList.createUser(cert.getSerialNumber(), newUser);
+			}
+			while ((clientMsg = in.readLine()) != null) {
+
+				out.println(user.options());
+				out.println("ENDOFMSG".toCharArray());
+
+			}
 			close(socket, out, in);
 		} catch (Exception e) {
-            System.out.println("Client died: " + e.getMessage());
-            e.printStackTrace();
-            return;
-        }
-    }
+			System.out.println("Client died: " + e.getMessage());
+			e.printStackTrace();
+			return;
+		}
+	}
 
 	private void close(SSLSocket socket, PrintWriter out, BufferedReader in) throws IOException {
 		in.close();
@@ -136,22 +134,22 @@ public class Server implements Runnable {
 		}
 	}
 
-	private KeyStore getKeyStore(String Id) {
-		try {
-			KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-			KeyStore ks = KeyStore.getInstance("JKS");
-			char[] password = "password".toCharArray();
-			ks.load(new FileInputStream("serverstores/" + Id), password);
-			kmf.init(ks, password);
-
-			return ks;
-		} catch (Exception e) {
-			System.err.println("Could not find keystore");
-			e.printStackTrace();
-			return null;
-		}
-
-	}
+	// private KeyStore getKeyStore(String Id) {
+	// try {
+	// KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+	// KeyStore ks = KeyStore.getInstance("JKS");
+	// char[] password = "password".toCharArray();
+	// ks.load(new FileInputStream("serverstores/" + Id), password);
+	// kmf.init(ks, password);
+	//
+	// return ks;
+	// } catch (Exception e) {
+	// System.err.println("Could not find keystore");
+	// e.printStackTrace();
+	// return null;
+	// }
+	//
+	// }
 
 	private static ServerSocketFactory getServerSocketFactory(String type) {
 		if (type.equals("TLS")) {
@@ -164,12 +162,12 @@ public class Server implements Runnable {
 				KeyStore ts = KeyStore.getInstance("JKS");
 				char[] password = "password".toCharArray();
 
-				ks.load(new FileInputStream("serverstores/serverkeystore"), password); // keystore
+				ks.load(new FileInputStream("Certs/ServerStore/serverkeystore"), password); // keystore
+				// password
+				// (storepass)
+				ts.load(new FileInputStream("Certs/ServerStore/servertruststore"), password); // truststore
 																						// password
 																						// (storepass)
-				ts.load(new FileInputStream("serverstores/servertruststore"), password); // truststore
-																							// password
-																							// (storepass)
 				kmf.init(ks, password); // certificate password (keypass)
 				tmf.init(ts); // possible to use keystore as truststore here
 				ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);

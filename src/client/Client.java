@@ -49,8 +49,8 @@ public class Client {
                 TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
                
                 SSLContext ctx = SSLContext.getInstance("TLS");
-                ks.load(new FileInputStream("clientstores/" + msg[0] + ".jks"), password);  // keystore password (storepass)
-				ts.load(new FileInputStream("clientstores/clienttruststore"), "password".toCharArray()); // truststore password (storepass);
+                ks.load(new FileInputStream("Certs/ClientStores/" + msg[0] + "/" + msg[0] + ".jks"), password);  // keystore password (storepass)
+				ts.load(new FileInputStream("Certs/ClientStores/" + msg[0] + "/clienttruststore"), "password".toCharArray()); // truststore password (storepass);
 				kmf.init(ks, password); // user password (keypass)
 				tmf.init(ts); // keystore can be used as truststore here
 				ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
@@ -62,7 +62,6 @@ public class Client {
             }
       
             SSLSocket socket = (SSLSocket)factory.createSocket(host, port);
-         	System.out.println("i has the no socket");
             System.out.println("\nsocket before handshake:\n" + socket + "\n");
 
             /*
