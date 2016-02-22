@@ -62,5 +62,11 @@ public abstract class User implements Comparable {
 		return null;
 	}
 
+	public char[] getOption(String readLine) {
+		return null;
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

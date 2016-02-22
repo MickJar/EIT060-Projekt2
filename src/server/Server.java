@@ -92,6 +92,7 @@ public class Server implements Runnable {
 
 				out.println(user.options());
 				out.println("ENDOFMSG".toCharArray());
+				out.println(user.getOption(in.readLine()));
 
 			}
 			close(socket, out, in);

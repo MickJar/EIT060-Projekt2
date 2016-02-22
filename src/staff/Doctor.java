@@ -50,5 +50,11 @@ public class Doctor extends User {
 		char[] output = "Press 1 to list patient records \n Press 2 to list division records \n Press 3 to enter new patient record".toCharArray();
 		return output;
 	}
+	public char[] getOption(String readline){
+//		for(String id : patients){
+//			JournalDataBase.get(id);
+//		}
+		return patients.toString().toCharArray();
+	}
 
 }
