@@ -2,7 +2,7 @@ package staff;
 
 import java.util.ArrayList;
 
-public class Doctor extends StaffMember {
+public class Doctor extends User {
 
 	private final boolean readAccess = true;
 

@@ -12,6 +12,8 @@ import javax.net.ssl.*;
 import javax.security.cert.Certificate;
 import javax.security.cert.X509Certificate;
 
+import staff.User;
+
 public class Server implements Runnable {
 	private AccessBase userList = new AccessBase();
 	private JournalDatabase jd = new JournalDatabase();
@@ -56,6 +58,7 @@ public class Server implements Runnable {
 
 //            userList. 
             String clientMsg = "";
+            User user = userList.getUser(cert.getSerialNumber());
             while((clientMsg = in.readLine()) != null){
             	
             	   

@@ -2,7 +2,7 @@ package staff;
 
 import server.JournalDatabase;
 
-public abstract class StaffMember implements Comparable {
+public abstract class User implements Comparable {
 	private String id;
 	private String title;
 	private String name;
@@ -10,7 +10,7 @@ public abstract class StaffMember implements Comparable {
 	private static int idCounter = 1;
 	private JournalDatabase jb;
 
-	public StaffMember(String name, Division div) {
+	public User(String name, Division div) {
 		this.name = name;
 		this.div = div;
 		id = Integer.toString(idCounter);

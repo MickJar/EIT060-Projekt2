@@ -17,4 +17,5 @@ public class JournalDatabase {
 	public void put(int id, Journal journal){
 		journals.put(id,journal);
 	}
+	
 }

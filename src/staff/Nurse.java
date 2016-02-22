@@ -2,7 +2,7 @@ package staff;
 
 import java.util.ArrayList;
 
-public class Nurse extends StaffMember {
+public class Nurse extends User {
 	private final String TITLE = "Nurse";
 	private ArrayList<Patient> patients;
 		
