@@ -3,6 +3,10 @@ package staff;
 import server.JournalDatabase;
 
 public abstract class User implements Comparable {
+	public static final char[] R = "ReadAccessAllowed".toCharArray();
+	public static final char[] W = "WriteAccessAllowed".toCharArray();
+	public static final char[] D = "DeletesAccessAllowed".toCharArray();
+
 	private String id;
 	private String title;
 	private String name;
@@ -57,12 +61,9 @@ public abstract class User implements Comparable {
 		
 	}
 
-	public char[] options() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	public char[] getOption(String readLine) {
+
+	public char[] handleInput(String readLine) {
 		return null;
 		// TODO Auto-generated method stub
 		

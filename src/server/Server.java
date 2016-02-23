@@ -58,18 +58,17 @@ public class Server implements Runnable {
 			String clientMsg = "";
 			
 
-			running: while(true){
+			
 				input: while ((clientMsg = in.readLine()) != "" && clientMsg != null) {
 					if (clientMsg!= null && clientMsg.equals("quit")){
 						
 						break input;
 					}
 
-					out.println(user.getOption(clientMsg));
+					out.println(handleUsersOutput(user.handleInput(clientMsg)));
 					out.println("ENDOFMSG".toCharArray());
 				}
-				break running;
-			}
+				
 			close(socket, out, in);
 		} catch (Exception e) {
 			System.out.println("Client died: " + e.getMessage());
@@ -78,6 +77,15 @@ public class Server implements Runnable {
 		}
 	}
 
+	private char[] handleUsersOutput(char[] output){
+		String[] outputs = (output.toString()).split(":");
+		if((outputs[0].toCharArray()).equals(User.R)){
+			
+		} else {
+		}
+		return output;
+	}
+	
 	private void close(SSLSocket socket, PrintWriter out, BufferedReader in) throws IOException {
 		userList.saveFile();
 		in.close();
