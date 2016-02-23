@@ -6,7 +6,7 @@ public class Doctor extends User {
 
 	private final boolean readAccess = true;
 
-	private final String TITLE = "Doctor";
+	private final static String TITLE = "Doctor";
 	private ArrayList<String> patients;
 	private static int doctorIdCounter = 1;
 
@@ -54,7 +54,6 @@ public class Doctor extends User {
 				output = "Press 1 to list patient records \nPress 2 to list division records \nPress 6 to enter new patient record".toCharArray();
 				break;
 			case "1":
-				
 				output = "Enter 3 followed by id to read a patient record (example: 3 001) \nEnter 4 followed by id to write a patient record \nPress B to go to main menu".toCharArray();
 				break;
 			case "2":
@@ -64,6 +63,14 @@ public class Doctor extends User {
 				output = "Enter 7 followed by id to create a patient record (example: 7 001) \nPress B to go to main menu ".toCharArray();
 				break;
 		}
+		return output;
+	}
+	public String toString(){
+		String output = Doctor.TITLE + ":" + this.getName() + ":" + this.getDivision().toString() + ":";
+		for(String e : patients){
+			output += e + ";";
+		}
+		output += ":";
 		return output;
 	}
 

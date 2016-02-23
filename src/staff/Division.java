@@ -23,5 +23,9 @@ public class Division {
 			System.out.println(member.getTitle() + " " + member.getName() + " is not a member of division " + divisionId);
 		}
 	}
+	public String toString(){
+		return divisionId;
+	}
+	
 
 }

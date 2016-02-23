@@ -59,14 +59,16 @@ public class Server implements Runnable {
 			
 
 			running: while(true){
-				while ((clientMsg = in.readLine()) != "") {
-					if (clientMsg.equals("quit")){
-						break running;
+				input: while ((clientMsg = in.readLine()) != "" && clientMsg != null) {
+					if (clientMsg!= null && clientMsg.equals("quit")){
+						
+						break input;
 					}
 
 					out.println(user.getOption(clientMsg));
 					out.println("ENDOFMSG".toCharArray());
 				}
+				break running;
 			}
 			close(socket, out, in);
 		} catch (Exception e) {
@@ -77,6 +79,7 @@ public class Server implements Runnable {
 	}
 
 	private void close(SSLSocket socket, PrintWriter out, BufferedReader in) throws IOException {
+		userList.saveFile();
 		in.close();
 		out.close();
 		socket.close();
