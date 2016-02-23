@@ -56,7 +56,7 @@ public class Server implements Runnable {
 			User user = getUser(cert);
 
 			String clientMsg = "";
-			out.println(user.getOption(clientMsg));
+			
 
 			running: while(true){
 				while ((clientMsg = in.readLine()) != "") {
