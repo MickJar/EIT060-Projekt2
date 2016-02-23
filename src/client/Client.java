@@ -17,95 +17,99 @@ import javax.security.cert.X509Certificate;
 
 public class Client {
 	public static void main(String[] args) throws Exception {
-        String host = null;
-        int port = -1;
-        for (int i = 0; i < args.length; i++) {
-            System.out.println("args[" + i + "] = " + args[i]);
-        }
-        if (args.length < 2) {
-            System.out.println("USAGE: java client host port");
-            System.exit(-1);
-        }
-        try { /* get input parameters */
-            host = args[0];
-            port = Integer.parseInt(args[1]);
-        } catch (IllegalArgumentException e) {
-            System.out.println("USAGE: java client host port");
-            System.exit(-1);
-        }
-        String[] msg = new String[2];
-        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Enter Username:");
-        msg[0] = read.readLine();
-        System.out.println("Enter Password:");
-        msg[1] = read.readLine();
-        try { /* set up a key manager for client authentication */
-            SSLSocketFactory factory = null;
-            try {
-                char[] password = msg[1].toCharArray();
-                KeyStore ks = KeyStore.getInstance("JKS");
-                KeyStore ts = KeyStore.getInstance("JKS");
-                KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-                TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-               
-                SSLContext ctx = SSLContext.getInstance("TLS");
-                ks.load(new FileInputStream("Certs/ClientStores/" + msg[0] + "/" + msg[0] + ".jks"), password);  // keystore password (storepass)
-				ts.load(new FileInputStream("Certs/ClientStores/" + msg[0] + "/clienttruststore"), "password".toCharArray()); // truststore password (storepass);
+		String host = null;
+		int port = -1;
+		for (int i = 0; i < args.length; i++) {
+			System.out.println("args[" + i + "] = " + args[i]);
+		}
+		if (args.length < 2) {
+			System.out.println("USAGE: java client host port");
+			System.exit(-1);
+		}
+		try { /* get input parameters */
+			host = args[0];
+			port = Integer.parseInt(args[1]);
+		} catch (IllegalArgumentException e) {
+			System.out.println("USAGE: java client host port");
+			System.exit(-1);
+		}
+		String[] msg = new String[2];
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		System.out.print("Enter Username:");
+		msg[0] = read.readLine();
+		System.out.print("Enter Password:");
+		msg[1] = read.readLine();
+		try { /* set up a key manager for client authentication */
+			SSLSocketFactory factory = null;
+			try {
+				char[] password = msg[1].toCharArray();
+				KeyStore ks = KeyStore.getInstance("JKS");
+				KeyStore ts = KeyStore.getInstance("JKS");
+				KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+				TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+
+				SSLContext ctx = SSLContext.getInstance("TLS");
+				ks.load(new FileInputStream("Certs/ClientStores/" + msg[0] + "/" + msg[0] + ".jks"), password); // keystore
+																												// password
+																												// (storepass)
+				ts.load(new FileInputStream("Certs/ClientStores/" + msg[0] + "/clienttruststore"),
+						"password".toCharArray()); // truststore password
+													// (storepass);
 				kmf.init(ks, password); // user password (keypass)
 				tmf.init(ts); // keystore can be used as truststore here
 				ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
-                factory = ctx.getSocketFactory();
-                
-            } catch (Exception e) {
-            	
-                throw new IOException(e.getMessage());
-            }
-      
-            SSLSocket socket = (SSLSocket)factory.createSocket(host, port);
-            System.out.println("\nsocket before handshake:\n" + socket + "\n");
+				factory = ctx.getSocketFactory();
 
-            /*
-             * send http request
-             *
-             * See SSLSocketClient.java for more information about why
-             * there is a forced handshake here when using PrintWriters.
-             */
-            socket.startHandshake();
+			} catch (Exception e) {
 
-            SSLSession session = socket.getSession();
-            X509Certificate cert = (X509Certificate)session.getPeerCertificateChain()[0];
-            String subject = cert.getSubjectDN().getName();
-            System.out.println("certificate name (subject DN field) on certificate received from server:\n" + subject + "\n");
-            System.out.println("socket after handshake:\n" + socket + "\n");
-            System.out.println("secure connection established\n\n");
+				throw new IOException(e.getMessage());
+			}
 
-            
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			SSLSocket socket = (SSLSocket) factory.createSocket(host, port);
+			System.out.println("\nsocket before handshake:\n" + socket + "\n");
+
+			/*
+			 * send http request
+			 *
+			 * See SSLSocketClient.java for more information about why there is
+			 * a forced handshake here when using PrintWriters.
+			 */
+			socket.startHandshake();
+
+			SSLSession session = socket.getSession();
+			X509Certificate cert = (X509Certificate) session.getPeerCertificateChain()[0];
+			String subject = cert.getSubjectDN().getName();
+			System.out.println(
+					"certificate name (subject DN field) on certificate received from server:\n" + subject + "\n");
+			System.out.println("socket after handshake:\n" + socket + "\n");
+			System.out.println("secure connection established\n\n");
+
+			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			System.out.println("Sending username...");
 			out.println(msg[0]);
-			while(socket.isConnected()) {
+			while (socket.isConnected()) {
 				String input;
-				while (!(input = in.readLine()).equals("ENDOFMSG")){
-				System.out.println(input);
+				while (!(input = in.readLine()).equals("ENDOFMSG")) {
+					System.out.println(input);
 				}
-				System.out.println(">");
-                msg[0] = read.readLine();
+				System.out.print(">");
+				msg[0] = read.readLine();
 				if (msg[0].equalsIgnoreCase("quit")) {
-				    break;
+					break;
 				}
-                out.flush();
-                
-            }
-            in.close();
+				out.println(msg[0]);
+				out.flush();
+
+			}
+			in.close();
 			out.close();
 			read.close();
-            socket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+			socket.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }
-
