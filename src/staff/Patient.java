@@ -12,9 +12,8 @@ public class Patient extends User {
 
 	}
 	
-	public char[] options(){
-		char[] output = "Press 1 to list records".toCharArray();
-		return output;
+	public char[] listOptions(){
+		return (User.LIST_PATIENT_RECORDS+"\n").toCharArray();
 	}
 
 }

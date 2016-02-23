@@ -51,7 +51,7 @@ public class Doctor extends User {
 	
 	public char[] listOptions(){
 		char[] output = null;
-		output = (User.LIST_PATIENT_RECORDS+"\n"+User.LIST_DIVISION_RECORDS+"\n"+User.CREATE_PATIENT_RECORD).toCharArray();
+		output = (User.LIST_PATIENT_RECORDS+"\n"+User.LIST_DIVISION_RECORDS+"\n"+User.READ_PATIENT_RECORD+"\n"+User.WRITE_PATIENT_RECORD+"\n"+User.CREATE_PATIENT_RECORD+"\n").toCharArray();
 		return output;
 	}
 	public String toString(){

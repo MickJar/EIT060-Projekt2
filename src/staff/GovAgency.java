@@ -5,8 +5,7 @@ public class GovAgency extends User{
 		super("BigBrother", new Division("G"));
 
 	}
-	public char[] options(){
-		char[] output = "Press 1 to list patient records".toCharArray();
-		return output;
+	public char[] listOptions(){
+		return (User.READ_PATIENT_RECORD+"\n"+User.DELETE_PATIENT_RECORD+"\n").toCharArray();
 	}	
 }
