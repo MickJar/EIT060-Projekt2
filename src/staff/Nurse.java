@@ -31,7 +31,7 @@ public class Nurse extends User {
 		char[] output = "Press 1 to list patient records \n Press 2 to list division records".toCharArray();
 		return output;
 	}
-	public char[] handleInput(String readline){
+	public char[] listOptions(String readline){
 //		for(String id : patients){
 //			JournalDataBase.get(id);
 //		}

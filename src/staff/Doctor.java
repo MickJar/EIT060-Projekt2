@@ -2,6 +2,8 @@ package staff;
 
 import java.util.ArrayList;
 
+import server.Server;
+
 public class Doctor extends User {
 
 	public final boolean readAccess = true;
@@ -47,25 +49,9 @@ public class Doctor extends User {
 		
 	}
 	
-	public char[] handleInput(String readLine){
+	public char[] listOptions(){
 		char[] output = null;
-		String[] readLines = readLine.split(" ");
-		switch (readLines[0]) {
-			default :
-				output = "Press 1 to list patient records \nPress 2 to list division records \nPress 6 to enter new patient record".toCharArray();
-				break;
-			case "1":
-				output = "Enter 3 followed by id to read a patient record (example: 3 001) \nEnter 4 followed by id to write a patient record \nPress B to go to main menu".toCharArray();
-				break;
-			case "2":
-				output = "Enter 5 followed by id to read a division record (example: 5 001) \nPress B to go to main menu ".toCharArray();
-				break;
-			case "6":
-				output = "Enter 7 followed by id to create a patient record (example: 7 001) \nPress B to go to main menu ".toCharArray();
-				break;
-			
-				
-		}
+		output = (User.LIST_PATIENT_RECORDS+"\n"+User.LIST_DIVISION_RECORDS+"\n"+User.CREATE_PATIENT_RECORD).toCharArray();
 		return output;
 	}
 	public String toString(){
