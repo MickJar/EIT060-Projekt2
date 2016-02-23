@@ -26,11 +26,19 @@ import staff.Patient;
 import staff.User;
 
 public class Server implements Runnable {
+	private KeyStore keystore;
+	public static final int LIST_PATIENT_RECORDS = 1;
+	public static final int LIST_DIVISION_RECORDS = 2;
+	public static final int READ_PATIENT_RECORD = 3;
+	public static final int WRITE_PATIENT_RECORD = 4;
+	public static final int CREATE_PATIENT_RECORD = 5;
+	public static final int DELETE_PATIENT_RECORD = 6;
+
+	
 	private AccessBase userList = new AccessBase();
 	private JournalDatabase jd = new JournalDatabase();
 	private ServerSocket serverSocket = null;
 	private static int numConnectedClients = 0;
-	private KeyStore keystore;
 
 	public Server(ServerSocket ss) throws IOException {
 		serverSocket = ss;
@@ -64,8 +72,8 @@ public class Server implements Runnable {
 						
 						break input;
 					}
-
-					out.println(handleUsersOutput(user.handleInput(clientMsg)));
+					//user.handleInput(clientMsg)
+					out.println(handleClientInput(clientMsg, user));
 					out.println("ENDOFMSG".toCharArray());
 				}
 				
@@ -77,13 +85,16 @@ public class Server implements Runnable {
 		}
 	}
 
-	private char[] handleUsersOutput(char[] output){
-		String[] outputs = (output.toString()).split(":");
-		if((outputs[0].toCharArray()).equals(User.R)){
-			
-		} else {
+	private char[] handleClientInput(String clientMsg, User user){
+		String[] inputs = clientMsg.split(" ");
+		if(inputs.length > 1){
+			if(inputs[0].equals("3") && user.hasPatient(inputs[1])){
+				return jd.getJournal(Integer.parseInt(inputs[1])).toString().toCharArray();
+			} else if (inputs[0].equals("4") && user.hasPatient(inputs[1])){
+				
+			}
 		}
-		return output;
+		return clientMsg.toCharArray();
 	}
 	
 	private void close(SSLSocket socket, PrintWriter out, BufferedReader in) throws IOException {

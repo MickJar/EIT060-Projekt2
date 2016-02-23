@@ -69,5 +69,10 @@ public abstract class User implements Comparable {
 		
 	}
 
+	public boolean hasPatient(String string) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }

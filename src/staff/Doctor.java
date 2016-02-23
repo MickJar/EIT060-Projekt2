@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Doctor extends User {
 
-	private final boolean readAccess = true;
+	public final boolean readAccess = true;
 
 	private final static String TITLE = "Doctor";
 	private ArrayList<String> patients;
@@ -20,7 +20,7 @@ public class Doctor extends User {
 		return patients;
 	}
 
-	public Boolean getPatient(String id) {
+	public boolean hasPatient(String id) {
 		return patients.contains(id);
 		
 	}
