@@ -4,18 +4,19 @@ import java.util.ArrayList;
 
 public class Nurse extends User {
 	private final String TITLE = "Nurse";
-	private ArrayList<Patient> patients;
+	private ArrayList<String> patients;
 		
 	public Nurse(String name, Division div) {
 		super(name, div);
+		patients = new ArrayList<String>();
 
 	}
 	
-	public ArrayList<Patient> getPatients() {
+	public ArrayList<String> getPatients() {
 		return patients;
 	}
 
-	public void addPatient(Patient pat) {
+	public void addPatient(String pat) {
 		if (!patients.contains(pat)) {
 			patients.add(pat);
 		}
@@ -30,5 +31,13 @@ public class Nurse extends User {
 		char[] output = "Press 1 to list patient records \n Press 2 to list division records".toCharArray();
 		return output;
 	}
+	public char[] getOption(String readline){
+//		for(String id : patients){
+//			JournalDataBase.get(id);
+//		}
+		return patients.toString().toCharArray();
+	}
+	
+	
 
 }
