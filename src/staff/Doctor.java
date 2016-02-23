@@ -63,32 +63,7 @@ public class Doctor extends User {
 			case "6":
 				output = "Enter 7 followed by id to create a patient record (example: 7 001) \nPress B to go to main menu ".toCharArray();
 				break;
-			case "3":
-				if(readLines.length==1){
-					output = "Please enter ID number".toCharArray();
-					return output;
-				}
-				for(String p: patients){
-					if(p.equals(readLines[1])){
-						
-						return ((User.R).toString()+":"+readLines[1]).toCharArray();
-					}
-				}
-				output = "Read record denied".toCharArray();
-				break;
-			case "4":
-				if(readLines.length==1){
-					output = "Please enter ID number".toCharArray();
-					return output;
-				}
-				for(String p: patients){
-					if(p.equals(readLines[1])){
-						
-						return ((User.W).toString()+":"+readLines[1]).toCharArray();
-					}
-				}
-				output = "Write record denied".toCharArray();
-				break;
+			
 				
 		}
 		return output;
