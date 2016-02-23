@@ -27,12 +27,13 @@ import staff.User;
 
 public class Server implements Runnable {
 	private KeyStore keystore;
-	public static final int LIST_PATIENT_RECORDS = 1;
-	public static final int LIST_DIVISION_RECORDS = 2;
-	public static final int READ_PATIENT_RECORD = 3;
-	public static final int WRITE_PATIENT_RECORD = 4;
-	public static final int CREATE_PATIENT_RECORD = 5;
-	public static final int DELETE_PATIENT_RECORD = 6;
+	public static final String LIST_PATIENT_RECORDS = "1";
+	public static final String LIST_DIVISION_RECORDS = "2";
+	public static final String READ_PATIENT_RECORD = "3";
+	public static final String WRITE_PATIENT_RECORD = "4";
+	public static final String APPEND_PATIENT_RECORD = "41";
+	public static final String CREATE_PATIENT_RECORD = "5";
+	public static final String DELETE_PATIENT_RECORD = "6";
 
 	
 	private AccessBase userList = new AccessBase();
@@ -91,6 +92,8 @@ public class Server implements Runnable {
 			if(inputs[0].equals("3") && user.hasPatient(inputs[1])){
 				return jd.getJournal(Integer.parseInt(inputs[1])).toString().toCharArray();
 			} else if (inputs[0].equals("4") && user.hasPatient(inputs[1])){
+				return "Enter the Record to be added".toCharArray();
+			}else if (inputs[0].equals(Server.APPEND_PATIENT_RECORD)){
 				
 			}
 		}
