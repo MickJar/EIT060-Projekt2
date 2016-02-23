@@ -4,12 +4,14 @@ import java.sql.Date;
 
 public class JournalEntry {
 	private String entry;
+	private String Date;
 	
-	public JournalEntry(String entry) {
+	public JournalEntry(String entry, String Date) {
 		this.entry = entry;
+		this.Date = Date;
 	}
 	
-	public String getEntry() {
-		return entry;
+	public JournalEntry getEntry() {
+		return this;
 	}
 }

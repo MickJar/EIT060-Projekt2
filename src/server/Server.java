@@ -1,4 +1,5 @@
 package server;
+import staff.*;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -7,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.security.KeyStore;
+import java.util.Date;
 
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.KeyManagerFactory;
@@ -35,7 +37,6 @@ public class Server implements Runnable {
 	public static final String CREATE_PATIENT_RECORD = "5";
 	public static final String DELETE_PATIENT_RECORD = "6";
 
-	
 	private AccessBase userList = new AccessBase();
 	private JournalDatabase jd = new JournalDatabase();
 	private ServerSocket serverSocket = null;
@@ -57,27 +58,23 @@ public class Server implements Runnable {
 
 			numConnectedClients++;
 
-
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
 
 			User user = getUser(cert);
 
 			String clientMsg = "";
-			
 
-			
-				input: while ((clientMsg = in.readLine()) != "" && clientMsg != null) {
-					if (clientMsg!= null && clientMsg.equals("quit")){
-						
-						break input;
-					}
-					//user.handleInput(clientMsg)
-					out.println(handleClientInput(clientMsg, user));
-					out.println("ENDOFMSG".toCharArray());
+			input: while ((clientMsg = in.readLine()) != "" && clientMsg != null) {
+				if (clientMsg != null && clientMsg.equals("quit")) {
+
+					break input;
 				}
-				
+				// user.handleInput(clientMsg)
+				out.println(handleClientInput(clientMsg, user));
+				out.println("ENDOFMSG".toCharArray());
+			}
+
 			close(socket, out, in);
 		} catch (Exception e) {
 			System.out.println("Client died: " + e.getMessage());
@@ -86,20 +83,23 @@ public class Server implements Runnable {
 		}
 	}
 
-	private char[] handleClientInput(String clientMsg, User user){
+	private char[] handleClientInput(String clientMsg, User user) {
 		String[] inputs = clientMsg.split(" ");
-		if(inputs.length > 1){
-			if(inputs[0].equals("3") && user.hasPatient(inputs[1])){
+		if (inputs.length > 1) {
+			if (inputs[0].equals(READ_PATIENT_RECORD) && user.hasPatient(inputs[1])) {
 				return jd.getJournal(Integer.parseInt(inputs[1])).toString().toCharArray();
-			} else if (inputs[0].equals("4") && user.hasPatient(inputs[1])){
+			} else if (inputs[0].equals(WRITE_PATIENT_RECORD) && user.hasPatient(inputs[1])) {
 				return "Enter the Record to be added".toCharArray();
-			}else if (inputs[0].equals(Server.APPEND_PATIENT_RECORD)){
-				
+			} else if (inputs[0].equals(Server.APPEND_PATIENT_RECORD) && user.hasPatient(inputs[1])) { 
+				        Journal temp = jd.getJournal(Integer.parseInt(inputs[1]));
+				        temp.addEntry(inputs[2], new Date().toString());
+						jd.put(inputs[1], temp);
+						
 			}
 		}
-		return clientMsg.toCharArray();
+		return user.listOptions();
 	}
-	
+
 	private void close(SSLSocket socket, PrintWriter out, BufferedReader in) throws IOException {
 		userList.saveFile();
 		in.close();
@@ -113,8 +113,8 @@ public class Server implements Runnable {
 	private void newListener() {
 		(new Thread(this)).start();
 	} // calls run()
-	
-	private User getUser(X509Certificate cert){
+
+	private User getUser(X509Certificate cert) {
 		String subject = cert.getSubjectDN().getName();
 		String[] name = subject.split(",");
 		String clientName = name[0];
@@ -124,12 +124,12 @@ public class Server implements Runnable {
 		String clientDivision = name[2];
 		clientDivision = clientDivision.substring(3);
 		User user;
-		
+
 		System.out.println("client connected");
 		System.out.println("client name (cert subject DN field): " + name[0]);
 		System.out.println(numConnectedClients + " concurrent connection(s)\n");
 		System.out.println(clientClass + " " + clientName + " " + clientDivision);
-		
+
 		if ((user = userList.getUser(cert.getSerialNumber())) == null) {
 			User newUser;
 			switch (clientClass) {
@@ -137,7 +137,6 @@ public class Server implements Runnable {
 				newUser = new Doctor(clientName, new Division(clientDivision));
 				break;
 			case "N":
-
 				newUser = new Nurse(clientName, new Division(clientDivision));
 				break;
 			case "P":
@@ -210,8 +209,8 @@ public class Server implements Runnable {
 				// password
 				// (storepass)
 				ts.load(new FileInputStream("Certs/ServerStore/servertruststore"), password); // truststore
-																						// password
-																						// (storepass)
+				// password
+				// (storepass)
 				kmf.init(ks, password); // certificate password (keypass)
 				tmf.init(ts); // possible to use keystore as truststore here
 				ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);

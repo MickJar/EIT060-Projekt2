@@ -12,8 +12,8 @@ public class Journal {
 		this.id = id;
 	}
 
-	public void addEntry(String entry) {
-		records.add(new JournalEntry(entry));
+	public void addEntry(String entry, String date) {
+		records.add(new JournalEntry(entry, date));
 	}
 
 	public ArrayList<JournalEntry> getRecords() {
