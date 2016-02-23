@@ -45,54 +45,54 @@ public class Server implements Runnable {
 			SSLSession session = socket.getSession();
 			X509Certificate cert = (X509Certificate) session.getPeerCertificateChain()[0];
 			java.security.cert.Certificate aliasCert = session.getPeerCertificates()[0];
-			String subject = cert.getSubjectDN().getName();
-			String[] name = subject.split(",");
-			String clientName = name[0];
-			clientName = clientName.substring(3);
-			String clientClass = name[1];
-			clientClass = clientClass.substring(4);
-			String clientDivision = name[2];
-			clientDivision = clientDivision.substring(3);
+//			String subject = cert.getSubjectDN().getName();
+//			String[] name = subject.split(",");
+//			String clientName = name[0];
+//			clientName = clientName.substring(3);
+//			String clientClass = name[1];
+//			clientClass = clientClass.substring(4);
+//			String clientDivision = name[2];
+//			clientDivision = clientDivision.substring(3);
 			numConnectedClients++;
-			System.out.println("client connected");
-			System.out.println("client name (cert subject DN field): " + name[0]);
-			System.out.println(numConnectedClients + " concurrent connection(s)\n");
+//			System.out.println("client connected");
+//			System.out.println("client name (cert subject DN field): " + name[0]);
+//			System.out.println(numConnectedClients + " concurrent connection(s)\n");
 
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-			System.out.println(clientClass + " " + clientName + " " + clientDivision);
+//			System.out.println(clientClass + " " + clientName + " " + clientDivision);
 
 			// userList.
+			User user = getUser(cert);
+//			if ((user = userList.getUser(cert.getSerialNumber())) == null) {
+//				User newUser;
+//				switch (clientClass) {
+//				case "D":
+//					newUser = new Doctor(clientName, new Division(clientDivision));
+//					break;
+//				case "N":
+//
+//					newUser = new Nurse(clientName, new Division(clientDivision));
+//					break;
+//				case "P":
+//					newUser = new Patient(clientName, new Division(clientDivision));
+//					break;
+//				case "G":
+//					newUser = new GovAgency();
+//					break;
+//				default:
+//					newUser = null;
+//					break;
+//				}
+//				user = userList.createUser(cert.getSerialNumber(), newUser);
+//			}
 			String clientMsg = "";
-			User user;
-			if ((user = userList.getUser(cert.getSerialNumber())) == null) {
-				User newUser;
-				switch (clientClass) {
-				case "D":
-					newUser = new Doctor(clientName, new Division(clientDivision));
-					break;
-				case "N":
-
-					newUser = new Nurse(clientName, new Division(clientDivision));
-					break;
-				case "P":
-					newUser = new Patient(clientName, new Division(clientDivision));
-					break;
-				case "G":
-					newUser = new GovAgency();
-					break;
-				default:
-					newUser = null;
-					break;
-				}
-				user = userList.createUser(cert.getSerialNumber(), newUser);
-			}
 			while ((clientMsg = in.readLine()) != null) {
 
 				out.println(user.options());
 				out.println("ENDOFMSG".toCharArray());
-				out.println(user.getOption(in.readLine()));
+				out.println(user.getOption(clientMsg));
 
 			}
 			close(socket, out, in);
@@ -115,6 +115,51 @@ public class Server implements Runnable {
 	private void newListener() {
 		(new Thread(this)).start();
 	} // calls run()
+	
+	private User getUser(X509Certificate cert){
+		String subject = cert.getSubjectDN().getName();
+		String[] name = subject.split(",");
+		String clientName = name[0];
+		clientName = clientName.substring(3);
+		String clientClass = name[1];
+		clientClass = clientClass.substring(4);
+		String clientDivision = name[2];
+		clientDivision = clientDivision.substring(3);
+		User user;
+		
+		System.out.println("client connected");
+		System.out.println("client name (cert subject DN field): " + name[0]);
+		System.out.println(numConnectedClients + " concurrent connection(s)\n");
+		System.out.println(clientClass + " " + clientName + " " + clientDivision);
+		
+		if ((user = userList.getUser(cert.getSerialNumber())) == null) {
+			User newUser;
+			switch (clientClass) {
+			case "D":
+				newUser = new Doctor(clientName, new Division(clientDivision));
+				break;
+			case "N":
+
+				newUser = new Nurse(clientName, new Division(clientDivision));
+				break;
+			case "P":
+				newUser = new Patient(clientName, new Division(clientDivision));
+				break;
+			case "G":
+				newUser = new GovAgency();
+				break;
+			default:
+				newUser = null;
+				break;
+			}
+			try {
+				user = userList.createUser(cert.getSerialNumber(), newUser);
+			} catch (Exception e) {
+				System.err.println("Illegal operation");
+			}
+		}
+		return user;
+	}
 
 	public static void main(String args[]) {
 		System.out.println("\nServer Started\n");
