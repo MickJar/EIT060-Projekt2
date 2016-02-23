@@ -51,17 +51,17 @@ public class Doctor extends User {
 		char[] output = null;
 		switch (readLine) {
 			default :
-				output = "Press 1 to list patient records \n Press 2 to list division records \n Press 6 to enter new patient record".toCharArray();
+				output = "Press 1 to list patient records \nPress 2 to list division records \nPress 6 to enter new patient record".toCharArray();
 				break;
 			case "1":
 				
-				output = "Enter 3 followed by id to read a patient record (example: 3 001) \n Enter 4 followed by id to write a patient record \n Press B to go to main menu".toCharArray();
+				output = "Enter 3 followed by id to read a patient record (example: 3 001) \nEnter 4 followed by id to write a patient record \nPress B to go to main menu".toCharArray();
 				break;
 			case "2":
-				output = "Enter 5 followed by id to read a division record (example: 5 001 \n Press B to go to main menu ".toCharArray();
+				output = "Enter 5 followed by id to read a division record (example: 5 001 \nPress B to go to main menu ".toCharArray();
 				break;
 			case "6":
-				output = "Enter 7 followed by id to create a patient record (example: 7 001 \n Press B to go to main menu ".toCharArray();
+				output = "Enter 7 followed by id to create a patient record (example: 7 001 \nPress B to go to main menu ".toCharArray();
 				break;
 		}
 		return output;
