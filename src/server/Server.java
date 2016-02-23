@@ -88,12 +88,17 @@ public class Server implements Runnable {
 //				user = userList.createUser(cert.getSerialNumber(), newUser);
 //			}
 			String clientMsg = "";
-			while ((clientMsg = in.readLine()) != null) {
+			out.println(user.getOption(clientMsg));
+//			out.println(user.getOption(""));
+			running: while(true){
+				while ((clientMsg = in.readLine()) != "") {
+					if (clientMsg.equals("quit")){
+						break running;
+					}
 
-				out.println(user.options());
-				out.println("ENDOFMSG".toCharArray());
-				out.println(user.getOption(clientMsg));
-
+					out.println(user.getOption(clientMsg));
+					out.println("ENDOFMSG".toCharArray());
+				}
 			}
 			close(socket, out, in);
 		} catch (Exception e) {
