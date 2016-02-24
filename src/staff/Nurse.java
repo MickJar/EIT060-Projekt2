@@ -3,11 +3,11 @@ package staff;
 import java.util.ArrayList;
 
 public class Nurse extends User {
-	private final String TITLE = "Nurse";
+	private final static String TITLE = "Nurse";
 	private ArrayList<String> patients;
 		
-	public Nurse(String name, Division div) {
-		super(name, div);
+	public Nurse(String name, Division div, String id) {
+		super(name, div, id);
 		patients = new ArrayList<String>();
 
 	}
@@ -34,7 +34,14 @@ public class Nurse extends User {
 	public char[] listOptions(){
 		return (User.LIST_PATIENT_RECORDS+"\n"+User.LIST_DIVISION_RECORDS+"\n"+User.READ_PATIENT_RECORD+"\n"+User.WRITE_PATIENT_RECORD+"\n").toCharArray();
 	}
-	
+	public String toString(){
+		String output = Nurse.TITLE +":" + this.getId()+ ":" + this.getName() + ":" + this.getDivision().toString() + ":";
+		for(String e : patients){
+			output += e + ";";
+		}
+		output += ":";
+		return output;
+	}
 	
 
 }

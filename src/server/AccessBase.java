@@ -15,14 +15,25 @@ public class AccessBase {
 	public static final String KI = "Karolinska Institutet";
 	public static final String SB = "Sahlgrenska SexualSjukhus";
 	private HashMap<BigInteger, User> userDatabase;
+	private Integer idCounter = 1;
 
 	public AccessBase() {
 		userDatabase = new HashMap<BigInteger, User>();
 
 	}
+	
+	public String getAUserId(){
+		String uId = idCounter.toString();
+		idCounter++;
+		return uId;
+	}
+	
+	public void setIdCounter(String newId){
+		idCounter=Integer.parseInt(newId);
+	}
 
 	public User getUser(BigInteger Biggie) {
-		if(userDatabase.containsKey(Biggie)){
+		if(!userDatabase.containsKey(Biggie)){
 			return null;
 		}
 		return userDatabase.get(Biggie);
@@ -30,7 +41,7 @@ public class AccessBase {
 
 	public User createUser(BigInteger Biggie, User staffMember) throws Exception {
 
-		if (userDatabase.get(Biggie) == null) {
+		if (!userDatabase.containsKey(Biggie)) {
 			userDatabase.put(Biggie, staffMember);
 			return staffMember;
 		} else {

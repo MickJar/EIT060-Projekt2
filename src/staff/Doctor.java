@@ -10,10 +10,10 @@ public class Doctor extends User {
 
 	private final static String TITLE = "Doctor";
 	private ArrayList<String> patients;
-	private static int doctorIdCounter = 1;
+//	private static int doctorIdCounter = 1;
 
-	public Doctor(String name, Division div) {
-		super(name, div);
+	public Doctor(String name, Division div, String id) {
+		super(name, div, id);
 		patients = new ArrayList<String>();
 
 	}
@@ -55,7 +55,7 @@ public class Doctor extends User {
 		return output;
 	}
 	public String toString(){
-		String output = Doctor.TITLE + ":" + this.getName() + ":" + this.getDivision().toString() + ":";
+		String output = Doctor.TITLE + ":" + this.getId()+ ":" + this.getName() + ":" + this.getDivision().toString() + ":";
 		for(String e : patients){
 			output += e + ";";
 		}

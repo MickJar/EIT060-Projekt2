@@ -33,7 +33,6 @@ public class Server implements Runnable {
 	public static final String LIST_DIVISION_RECORDS = "2";
 	public static final String READ_PATIENT_RECORD = "3";
 	public static final String WRITE_PATIENT_RECORD = "4";
-	public static final String APPEND_PATIENT_RECORD = "41";
 	public static final String CREATE_PATIENT_RECORD = "5";
 	public static final String DELETE_PATIENT_RECORD = "6";
 
@@ -89,14 +88,15 @@ public class Server implements Runnable {
 			if (inputs[0].equals(READ_PATIENT_RECORD) && user.hasPatient(inputs[1])) {
 				return jd.getJournal(Integer.parseInt(inputs[1])).toString().toCharArray();
 			} else if (inputs[0].equals(WRITE_PATIENT_RECORD) && user.hasPatient(inputs[1])) {
+				Journal temp = jd.getJournal(Integer.parseInt(inputs[1]));
+				temp.addEntry(inputs[2], new Date().toString());
+				jd.put(inputs[1], temp);
 				return "Enter the Record to be added".toCharArray();
-			} else if (inputs[0].equals(Server.APPEND_PATIENT_RECORD) && user.hasPatient(inputs[1])) { 
-				        Journal temp = jd.getJournal(Integer.parseInt(inputs[1]));
-				        temp.addEntry(inputs[2], new Date().toString());
-						jd.put(inputs[1], temp);
-						
+			} else if (inputs[0].equals(Server.CREATE_PATIENT_RECORD) && user.hasPatient(inputs[1])) { 
+				return "".toCharArray();
 			}
 		}
+		
 		return user.listOptions();
 	}
 
@@ -129,18 +129,18 @@ public class Server implements Runnable {
 		System.out.println("client name (cert subject DN field): " + name[0]);
 		System.out.println(numConnectedClients + " concurrent connection(s)\n");
 		System.out.println(clientClass + " " + clientName + " " + clientDivision);
-
+		
 		if ((user = userList.getUser(cert.getSerialNumber())) == null) {
 			User newUser;
-			switch (clientClass) {
+			switch (clientClass.toUpperCase()) {
 			case "D":
-				newUser = new Doctor(clientName, new Division(clientDivision));
+				newUser = new Doctor(clientName, new Division(clientDivision), userList.getAUserId());
 				break;
 			case "N":
-				newUser = new Nurse(clientName, new Division(clientDivision));
+				newUser = new Nurse(clientName, new Division(clientDivision), userList.getAUserId());
 				break;
 			case "P":
-				newUser = new Patient(clientName, new Division(clientDivision));
+				newUser = new Patient(clientName, new Division(clientDivision), userList.getAUserId());
 				break;
 			case "G":
 				newUser = new GovAgency();
