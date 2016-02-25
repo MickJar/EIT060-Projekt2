@@ -36,9 +36,10 @@ public class Server implements Runnable {
 	public static final String WRITE_PATIENT_RECORD = "4";
 	public static final String CREATE_PATIENT_RECORD = "5";
 	public static final String DELETE_PATIENT_RECORD = "6";
+	public static final String WRITE_PATIENT_RECORD_INFORMATION = "41";
 
-	private AccessBase userList = new AccessBase();
-	private JournalDatabase jd = new JournalDatabase();
+	private AccessBase accessBase = new AccessBase();
+	private JournalDatabase journalDatabase = new JournalDatabase();
 	private ServerSocket serverSocket = null;
 	private static int numConnectedClients = 0;
 	private Logger theLog = new Logger("SavedFiles/loggerSave");
@@ -63,17 +64,31 @@ public class Server implements Runnable {
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			User user = getUser(cert);
+//			Logger.log(user.getId(), "N/A", "Log in");
 
 			String clientMsg = "";
-
+			char[] handleClientInput =null;
 			input: while ((clientMsg = in.readLine()) != "" && clientMsg != null) {
 				if (clientMsg != null && clientMsg.equals("quit")) {
 
 					break input;
 				}
 				// user.handleInput(clientMsg)
-				out.println(handleClientInput(clientMsg, user));
+				handleClientInput = handleClientInput(clientMsg, user);
+				out.println(handleClientInput);
 				out.println("ENDOFMSG".toCharArray());
+				String a = "";
+				for(char c: handleClientInput){
+					a+=c;
+				}
+				if((a).equals("Write information")){
+					System.out.println("was equal");
+					String additionalClientMsg = in.readLine();
+					char[] additionalHandleClientInput = handleClientInput("41 "+clientMsg+" "+additionalClientMsg, user);
+					out.println(additionalHandleClientInput);
+					out.println("ENDOFMSG".toCharArray());
+				}
+				
 			}
 
 			close(socket, out, in);
@@ -89,24 +104,68 @@ public class Server implements Runnable {
 		if (inputs.length > 1) {
 			if (inputs[0].equals(READ_PATIENT_RECORD) && user.hasPatient(inputs[1])) {
 				Logger.log(user.getId(), inputs[1], "Accessed Patient Records");
-				return jd.getJournal(Integer.parseInt(inputs[1])).toString().toCharArray();
+				return journalDatabase.getJournal((inputs[1])).toString().toCharArray();
 
 			} else if (inputs[0].equals(WRITE_PATIENT_RECORD) && user.hasPatient(inputs[1]) && inputs.length > 2) {
-				Journal temp = jd.getJournal(Integer.parseInt(inputs[1]));
-				temp.addEntry(inputs[2], new Date().toString());
-				jd.put(inputs[1], temp);
+//				Journal temp = journalDatabase.getJournal((inputs[1]));
+//				temp.addEntry(inputs[2], new Date().toString());
+//				journalDatabase.put(inputs[1], temp);
 				Logger.log(user.getId(), inputs[1], "Wrote to Patient Record" + inputs[2]);
-				return ("Record added:" + inputs[2]).toCharArray();
-			} else if (inputs[0].equals(Server.CREATE_PATIENT_RECORD) && user.hasPatient(inputs[1])) {
-				return "".toCharArray();
+				return ("Write information").toCharArray();
+//				return ("Record added:" + inputs[2]).toCharArray();
+			} else if (inputs[0].equals(Server.CREATE_PATIENT_RECORD)) {
+				((Doctor)user).newPatient(inputs[1]);
+				journalDatabase.getJournal(inputs[1]);
+				return (("Journal created\n\n")+(user.listOptions()).toString()).toCharArray();
+			} else if (inputs[0].equals(Server.WRITE_PATIENT_RECORD_INFORMATION)) {
+				
+				Doctor d;
+				Nurse n;
+				String patientID = inputs [2];
+				if(user instanceof Doctor){
+					d=(Doctor)user;
+					
+					String nurseID = inputs [3];
+					n = (Nurse)accessBase.getUserFromId(nurseID);
+					n.addPatient(patientID);
+				} else {
+					String doctorID = inputs [3];
+					d=(Doctor)accessBase.getUserFromId(doctorID);
+					
+					n = (Nurse)user;
+					d.newPatient(patientID);
+				}
+				
+				String information = "";
+				if(inputs.length>4){
+					for(int i=4; i<inputs.length; i++){
+						information += inputs[i] + " ";
+					}
+				}
+			
+				
+				journalDatabase.getJournal(patientID).addEntry(information, "today", d, n);
+				
+			} 
+		} else if (inputs[0].equals(Server.LIST_PATIENT_RECORDS)){
+			return user.printRecords().toCharArray();
+		} else if (inputs[0].equals(Server.LIST_DIVISION_RECORDS)){
+			String divMembers = "";
+			for(User u: user.getDivision().getMembers()){
+				if(u instanceof Patient){
+					divMembers += u.getId() + "\n";
+				}
+				
 			}
+			return divMembers.toCharArray();
 		}
 
 		return user.listOptions();
 	}
 
 	private void close(SSLSocket socket, PrintWriter out, BufferedReader in) throws IOException {
-		userList.saveFile();
+		accessBase.saveFile();
+		journalDatabase.saveFile();
 		in.close();
 		out.close();
 		socket.close();
@@ -135,17 +194,19 @@ public class Server implements Runnable {
 		System.out.println(numConnectedClients + " concurrent connection(s)\n");
 		System.out.println(clientClass + " " + clientName + " " + clientDivision);
 
-		if ((user = userList.getUser(cert.getSerialNumber())) == null) {
+		if ((user = accessBase.getUser(cert.getSerialNumber())) == null) {
+			System.out.println("USERISNULL");
+			System.out.println("USERISNULL");
 			User newUser;
 			switch (clientClass.toUpperCase()) {
 			case "D":
-				newUser = new Doctor(clientName, new Division(clientDivision), userList.getAUserId());
+				newUser = new Doctor(clientName, new Division(clientDivision), accessBase.getAUserId());
 				break;
 			case "N":
-				newUser = new Nurse(clientName, new Division(clientDivision), userList.getAUserId());
+				newUser = new Nurse(clientName, new Division(clientDivision), accessBase.getAUserId());
 				break;
 			case "P":
-				newUser = new Patient(clientName, new Division(clientDivision), userList.getAUserId());
+				newUser = new Patient(clientName, new Division(clientDivision), accessBase.getAUserId());
 				break;
 			case "G":
 				newUser = new GovAgency();
@@ -155,12 +216,15 @@ public class Server implements Runnable {
 				break;
 			}
 			try {
-				user = userList.createUser(cert.getSerialNumber(), newUser);
+				user = accessBase.createUser(cert.getSerialNumber(), newUser);
 			} catch (Exception e) {
 				System.err.println("Illegal operation");
 			}
+		} else {
+			System.out.println(cert.getSerialNumber());
+			System.out.println(user.getName());
 		}
-		Logger.log(user.getId(), "N/A", "Log in");
+		
 		return user;
 	}
 

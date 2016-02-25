@@ -32,12 +32,20 @@ public class Nurse extends User {
 			patients.remove(pat);
 		}
 	}
+	public String printRecords(){
+		String records = "";
+		for (String s: patients){
+			records+=s+"\n";
+		}
+		return records;
+	}
+	
 	public char[] options(){
 		char[] output = "Press 1 to list patient records \n Press 2 to list division records".toCharArray();
 		return output;
 	}
 	public char[] listOptions(){
-		return (User.LIST_PATIENT_RECORDS+"\n"+User.LIST_DIVISION_RECORDS+"\n"+User.READ_PATIENT_RECORD+"\n"+User.WRITE_PATIENT_RECORD+"\n").toCharArray();
+		return (User.LIST_PATIENT_RECORDS+"\n"+User.LIST_DIVISION_RECORDS+"\n"+User.READ_PATIENT_RECORD+"\n"+User.WRITE_PATIENT_RECORD_NURSE+"\n").toCharArray();
 	}
 	public String toString(){
 		String output = Nurse.TITLE +":" + this.getId()+ ":" + this.getName() + ":" + this.getDivision().toString() + ":";

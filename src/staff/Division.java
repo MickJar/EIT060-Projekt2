@@ -8,12 +8,17 @@ public class Division {
 
 	public Division(String id) {
 		this.divisionId = id;
+		members = new ArrayList<User>();
 	}
 	
 	public void addMember(User member) {
 		if (!members.contains(member)) {
 			members.add(member);	
 		}
+	}
+	
+	public ArrayList<User> getMembers(){
+		return members;
 	}
 	
 	public void removeMember(User member) {

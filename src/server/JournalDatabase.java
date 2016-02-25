@@ -18,7 +18,10 @@ public class JournalDatabase {
 		journals = new HashMap<String, Journal>();
 	}
 
-	public Journal getJournal(int id) {
+	public Journal getJournal(String id) {
+		if(!journals.containsKey(id)){
+			journals.put(id, new Journal());
+		}
 		return journals.get(id);
 	}
 	public void put(String id, Journal journal){
@@ -30,6 +33,7 @@ public class JournalDatabase {
 		if(!journalBaseSave.exists()){
 				try {
 					journalBaseSave.createNewFile();
+					System.out.println("here");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

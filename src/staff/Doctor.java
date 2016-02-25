@@ -28,7 +28,9 @@ public class Doctor extends User {
 	}
 
 	public void newPatient(String id) {
+		if(!patients.contains(id)){
 		patients.add(id);
+		}
 		
 	}
 
@@ -48,10 +50,16 @@ public class Doctor extends User {
 		
 		
 	}
-	
+	public String printRecords(){
+		String records = "";
+		for (String s: patients){
+			records+=s+"\n";
+		}
+		return records;
+	}
 	public char[] listOptions(){
 		char[] output = null;
-		output = (User.LIST_PATIENT_RECORDS+"\n"+User.LIST_DIVISION_RECORDS+"\n"+User.READ_PATIENT_RECORD+"\n"+User.WRITE_PATIENT_RECORD+"\n"+User.CREATE_PATIENT_RECORD+"\n").toCharArray();
+		output = (User.LIST_PATIENT_RECORDS+"\n"+User.LIST_DIVISION_RECORDS+"\n"+User.READ_PATIENT_RECORD+"\n"+User.WRITE_PATIENT_RECORD_DOCTOR+"\n"+User.CREATE_PATIENT_RECORD+"\n").toCharArray();
 		return output;
 	}
 	public String toString(){
