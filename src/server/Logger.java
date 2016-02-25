@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Logger {
-	private PrintStream output;
+	private static PrintStream output;
 	
 	public Logger(String file) {
 		try {
@@ -19,13 +19,13 @@ public class Logger {
 		}
 	}
 	
-	public String getTimeDate() {
+	public static String getTimeDate() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date = new Date();
 		return dateFormat.format(date);
 	}
 	
-	public void log(String editor, String patient, String action) {
+	public static void log(String editor, String patient, String action) {
 		output.println(getTimeDate() + " " + editor + " " + action + " for patient "  + patient);
 		output.flush();	
 	}

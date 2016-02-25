@@ -1,4 +1,5 @@
 package server;
+
 import staff.*;
 
 import java.io.BufferedReader;
@@ -40,6 +41,7 @@ public class Server implements Runnable {
 	private JournalDatabase jd = new JournalDatabase();
 	private ServerSocket serverSocket = null;
 	private static int numConnectedClients = 0;
+	private Logger theLog = new Logger("SavedFiles/loggerSave");
 
 	public Server(ServerSocket ss) throws IOException {
 		serverSocket = ss;
@@ -86,17 +88,20 @@ public class Server implements Runnable {
 		String[] inputs = clientMsg.split(" ");
 		if (inputs.length > 1) {
 			if (inputs[0].equals(READ_PATIENT_RECORD) && user.hasPatient(inputs[1])) {
+				Logger.log(user.getId(), inputs[1], "Accessed Patient Records");
 				return jd.getJournal(Integer.parseInt(inputs[1])).toString().toCharArray();
-			} else if (inputs[0].equals(WRITE_PATIENT_RECORD) && user.hasPatient(inputs[1])) {
+
+			} else if (inputs[0].equals(WRITE_PATIENT_RECORD) && user.hasPatient(inputs[1]) && inputs.length > 2) {
 				Journal temp = jd.getJournal(Integer.parseInt(inputs[1]));
 				temp.addEntry(inputs[2], new Date().toString());
 				jd.put(inputs[1], temp);
-				return "Enter the Record to be added".toCharArray();
-			} else if (inputs[0].equals(Server.CREATE_PATIENT_RECORD) && user.hasPatient(inputs[1])) { 
+				Logger.log(user.getId(), inputs[1], "Wrote to Patient Record" + inputs[2]);
+				return ("Record added:" + inputs[2]).toCharArray();
+			} else if (inputs[0].equals(Server.CREATE_PATIENT_RECORD) && user.hasPatient(inputs[1])) {
 				return "".toCharArray();
 			}
 		}
-		
+
 		return user.listOptions();
 	}
 
@@ -129,7 +134,7 @@ public class Server implements Runnable {
 		System.out.println("client name (cert subject DN field): " + name[0]);
 		System.out.println(numConnectedClients + " concurrent connection(s)\n");
 		System.out.println(clientClass + " " + clientName + " " + clientDivision);
-		
+
 		if ((user = userList.getUser(cert.getSerialNumber())) == null) {
 			User newUser;
 			switch (clientClass.toUpperCase()) {
@@ -155,6 +160,7 @@ public class Server implements Runnable {
 				System.err.println("Illegal operation");
 			}
 		}
+		Logger.log(user.getId(), "N/A", "Log in");
 		return user;
 	}
 
