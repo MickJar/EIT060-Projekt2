@@ -21,6 +21,11 @@ public class Nurse extends User {
 			patients.add(pat);
 		}
 	}
+	
+	public void newPatient(String id) {
+		patients.add(id);
+		
+	}
 
 	public void removePatient(Patient pat) {
 		if (patients.contains(pat)) {
