@@ -10,9 +10,12 @@ public class Patient extends User {
 //		id = super.createPatientId();
 
 	}
+	public String getTitle() {
+		return TITLE;
+	}
 	
-	public char[] listOptions(){
-		return (User.LIST_PATIENT_RECORDS+"\n").toCharArray();
+	public String listOptions(){
+		return (User.READ_PATIENT_RECORD_PATIENT+"\n");
 	}
 	public String toString(){
 	String output = Patient.TITLE +":" + this.getId()+ ":" + this.getName() + ":" + this.getDivision().toString() + ":";

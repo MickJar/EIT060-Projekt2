@@ -17,6 +17,15 @@ public class Division {
 		}
 	}
 	
+	public boolean containsMember(String id){
+		for(User u: members){
+			if(u.getId().equals(id)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public ArrayList<User> getMembers(){
 		return members;
 	}

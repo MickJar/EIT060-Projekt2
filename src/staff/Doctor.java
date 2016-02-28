@@ -2,7 +2,6 @@ package staff;
 
 import java.util.ArrayList;
 
-import server.Server;
 
 public class Doctor extends User {
 
@@ -10,12 +9,14 @@ public class Doctor extends User {
 
 	private final static String TITLE = "Doctor";
 	private ArrayList<String> patients;
-//	private static int doctorIdCounter = 1;
 
 	public Doctor(String name, Division div, String id) {
 		super(name, div, id);
 		patients = new ArrayList<String>();
 
+	}
+	public String getTitle() {
+		return TITLE;
 	}
 
 	public ArrayList<String> getPatients() {
@@ -34,11 +35,7 @@ public class Doctor extends User {
 		
 	}
 
-	public void addPatient(Patient pat) {
-		if (!patients.contains(pat)) {
-			patients.add(pat.getId());
-		}
-	}
+
 
 	public void removePatient(Patient pat) {
 		if (patients.contains(pat)) {
@@ -46,20 +43,10 @@ public class Doctor extends User {
 		}
 	}
 
-	public void appendJournal(int id, String text) {
-		
-		
-	}
-	public String printRecords(){
-		String records = "";
-		for (String s: patients){
-			records+=s+"\n";
-		}
-		return records;
-	}
-	public char[] listOptions(){
-		char[] output = null;
-		output = (User.LIST_PATIENT_RECORDS+"\n"+User.LIST_DIVISION_RECORDS+"\n"+User.READ_PATIENT_RECORD+"\n"+User.WRITE_PATIENT_RECORD_DOCTOR+"\n"+User.CREATE_PATIENT_RECORD+"\n").toCharArray();
+
+	public String listOptions(){
+		String output = null;
+		output = (User.LIST_PATIENT_RECORDS+"\n"+User.LIST_DIVISION_RECORDS+"\n"+User.READ_PATIENT_RECORD+"\n"+User.WRITE_PATIENT_RECORD+"\n"+User.CREATE_PATIENT_RECORD+"\n");
 		return output;
 	}
 	public String toString(){

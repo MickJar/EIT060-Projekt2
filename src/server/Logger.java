@@ -24,7 +24,12 @@ public class Logger {
 		Date date = new Date();
 		return dateFormat.format(date);
 	}
-	
+
+	public static String getDate() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		return dateFormat.format(date);
+	}
 	public static void log(String editor, String patient, String action) {
 		output.println(getTimeDate() + " " + editor + " " + action + " for patient "  + patient);
 		output.flush();	

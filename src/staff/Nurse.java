@@ -11,7 +11,9 @@ public class Nurse extends User {
 		patients = new ArrayList<String>();
 
 	}
-	
+	public String getTitle() {
+		return TITLE;
+	}
 	public ArrayList<String> getPatients() {
 		return patients;
 	}
@@ -20,6 +22,11 @@ public class Nurse extends User {
 		if (!patients.contains(pat)) {
 			patients.add(pat);
 		}
+	}
+	
+	public boolean hasPatient(String id) {
+		return patients.contains(id);
+		
 	}
 	
 	public void newPatient(String id) {
@@ -40,12 +47,9 @@ public class Nurse extends User {
 		return records;
 	}
 	
-	public char[] options(){
-		char[] output = "Press 1 to list patient records \n Press 2 to list division records".toCharArray();
-		return output;
-	}
-	public char[] listOptions(){
-		return (User.LIST_PATIENT_RECORDS+"\n"+User.LIST_DIVISION_RECORDS+"\n"+User.READ_PATIENT_RECORD+"\n"+User.WRITE_PATIENT_RECORD_NURSE+"\n").toCharArray();
+	
+	public String listOptions(){
+		return (User.LIST_PATIENT_RECORDS+"\n"+User.LIST_DIVISION_RECORDS+"\n"+User.READ_PATIENT_RECORD+"\n"+User.WRITE_PATIENT_RECORD+"\n");
 	}
 	public String toString(){
 		String output = Nurse.TITLE +":" + this.getId()+ ":" + this.getName() + ":" + this.getDivision().toString() + ":";
