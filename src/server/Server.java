@@ -26,17 +26,19 @@ import staff.User;
 
 public class Server implements Runnable {
 
-
 	
-	private Hospital hospital = new Hospital();
 	
-
+	
+	
+	
 	private ServerSocket serverSocket = null;
 	private static int numConnectedClients = 0;
-
+	private Hospital hospital;
+	
 	public Server(ServerSocket ss) throws IOException {
 		serverSocket = ss;
 		newListener();
+		hospital=new Hospital();
 
 	}
 
@@ -97,7 +99,7 @@ public class Server implements Runnable {
 		(new Thread(this)).start();
 	} // calls run()
 
-
+	
 
 	public static void main(String args[]) {
 		System.out.println("\nServer Started\n");
