@@ -54,6 +54,7 @@ public class Server implements Runnable {
 
 			User user = hospital.getUser(cert);
 
+
 			String clientMsg = "";
 			String handleClientInput =null;
 			input: while ((clientMsg = in.readLine()) != "" && clientMsg != null) {

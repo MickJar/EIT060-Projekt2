@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 
 import staff.Division;
 import staff.Doctor;
+import staff.GovAgency;
 import staff.Nurse;
 import staff.Patient;
 import staff.User;
@@ -136,18 +137,21 @@ public class AccessBase {
 					
 					
 				} else if (idInfo[1].equals("Government")){
-					
+					u = new GovAgency(idInfo[3], d, idInfo[2]);
 				}
 				
 				userDatabase.put(new BigInteger(idInfo[0]), u);
 				setIdCounter(highestId.toString());
+				
 			}
+			bufferedReader.close();
 		} catch (FileNotFoundException e) {
 			
 			e.printStackTrace();
 		} catch (IOException io) {
 			io.printStackTrace();
 		}
+		
 
             
 	}

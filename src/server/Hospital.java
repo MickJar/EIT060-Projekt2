@@ -54,6 +54,7 @@ public class Hospital {
 				((Doctor) user).newPatient(patientId);
 				journalDatabase.newJournal(patientId, user.getId(), inputs[2]);
 				((Nurse) accessBase.getUserFromId(inputs[2])).addPatient(patientId);
+				Logger.log(user.getId(), patientId, "Created Patient Record");
 				return (("Journal created\n\n") + (user.listOptions()).toString());
 			} else if (inputs[0].equals(WRITE_PATIENT_RECORD_INFORMATION)) {
 				patientId = inputs[2];
@@ -63,15 +64,24 @@ public class Hospital {
 						information += inputs[i] + " ";
 					}
 				}
+				
+				if((journalDatabase.getJournal(patientId, user.getId())) == null){
+					Logger.log(user.getId(), patientId, "Failed attemp to write to Patient Record");
+					return "Journal not found, please create journal for patient: "  + patientId;
+				}
 				journalDatabase.getJournal(patientId, user.getId()).addEntry(information, Logger.getDate());
+				Logger.log(user.getId(), patientId, "Wrote to Patient Record");
 			} else if (inputs[0].equals(DELETE_PATIENT_RECORD) && user.getTitle().equals("Government")) {
 				journalDatabase.deleteRecord(inputs[1]);
+				Logger.log(user.getId(), patientId, "Deleted Patient Record");
 			}
 		} else if (inputs[0].equals(LIST_PATIENT_RECORDS)) {
 			String listRecords = "Patient:IDnumber:Name:Hospital: \n";
 			for (String patientId : user.getPatients()) {
+				System.out.println(patientId);
 				listRecords += accessBase.getUserFromId(patientId).toString() + "\n";
 			}
+			Logger.log(user.getId(), user.getName(), "Víewed Associated Patient records");
 			return listRecords;
 		} else if (inputs[0].equals(LIST_DIVISION_RECORDS)) {
 			String divMembers = "Patient:IDnumber:Name:Hospital: \n";
@@ -81,8 +91,10 @@ public class Hospital {
 				}
 
 			}
+			Logger.log(user.getId(), user.getDivision().toString(), "Víewed division Patient records");
 			return divMembers;
 		} else if (inputs[0].equals(READ_PATIENT_RECORD)) {
+			Logger.log(user.getId(), user.getName(), "Read patient record");
 			return journalDatabase.readJournal(user.getId());
 		}
 
