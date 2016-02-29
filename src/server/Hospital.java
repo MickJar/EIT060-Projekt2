@@ -35,6 +35,7 @@ public class Hospital {
 	}
 
 	public String handleClientInput(String clientMsg, User user) {
+		
 		String[] inputs = clientMsg.split(" ");
 		if (inputs.length > 1) {
 			String patientId = inputs[1];
@@ -44,13 +45,14 @@ public class Hospital {
 						&& user.getDivision().containsMember(patientId)) || user.getTitle().equals("Government")) {
 					return journalDatabase.readJournal(patientId) + "\n" + user.listOptions();
 				} else if (user.hasPatient(patientId)) {
-					return journalDatabase.readJournal(patientId) + "\n" + user.listOptions();
+					return journalDatabase.getJournal(patientId, user.getId()).toString() + "\n\n"+ user.listOptions();
 				}
 
 			} else if (inputs[0].equals(WRITE_PATIENT_RECORD) && user.hasPatient(patientId)) {
 				Logger.log(user.getId(), inputs[1], "Wrote to Patient Record");
 				return ("Write information");
 			} else if (inputs[0].equals(CREATE_PATIENT_RECORD) && user instanceof Doctor) {
+				Logger.log(user.getId(), patientId, "Created Patient Records");
 				((Doctor) user).newPatient(patientId);
 				journalDatabase.newJournal(patientId, user.getId(), inputs[2]);
 				((Nurse) accessBase.getUserFromId(inputs[2])).addPatient(patientId);
@@ -72,13 +74,18 @@ public class Hospital {
 				journalDatabase.getJournal(patientId, user.getId()).addEntry(information, Logger.getDate());
 				Logger.log(user.getId(), patientId, "Wrote to Patient Record");
 			} else if (inputs[0].equals(DELETE_PATIENT_RECORD) && user.getTitle().equals("Government")) {
+				Logger.log(user.getId(), patientId, "Deleted Patient Records");
 				journalDatabase.deleteRecord(inputs[1]);
 				Logger.log(user.getId(), patientId, "Deleted Patient Record");
 			}
 		} else if (inputs[0].equals(LIST_PATIENT_RECORDS)) {
 			String listRecords = "Patient:IDnumber:Name:Hospital: \n";
 			for (String patientId : user.getPatients()) {
+<<<<<<< HEAD
 				System.out.println(patientId);
+=======
+				System.out.println("has a patient"+patientId);
+>>>>>>> origin/master
 				listRecords += accessBase.getUserFromId(patientId).toString() + "\n";
 			}
 			Logger.log(user.getId(), user.getName(), "Víewed Associated Patient records");
@@ -119,8 +126,6 @@ public class Hospital {
 		System.out.println(clientClass + " " + clientName + " " + clientDivision);
 
 		if ((user = accessBase.getUser(cert.getSerialNumber())) == null) {
-			System.out.println("USERISNULL");
-			System.out.println("USERISNULL");
 			User newUser;
 			switch (clientClass.toUpperCase()) {
 			case "D":
