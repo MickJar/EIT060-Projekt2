@@ -81,11 +81,9 @@ public class Hospital {
 		} else if (inputs[0].equals(LIST_PATIENT_RECORDS)) {
 			String listRecords = "Patient:IDnumber:Name:Hospital: \n";
 			for (String patientId : user.getPatients()) {
-<<<<<<< HEAD
 				System.out.println(patientId);
-=======
 				System.out.println("has a patient"+patientId);
->>>>>>> origin/master
+
 				listRecords += accessBase.getUserFromId(patientId).toString() + "\n";
 			}
 			Logger.log(user.getId(), user.getName(), "Víewed Associated Patient records");

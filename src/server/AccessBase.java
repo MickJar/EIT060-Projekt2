@@ -138,12 +138,11 @@ public class AccessBase {
 					u = new Patient(idInfo[3],d, idInfo[2]);
 					d.addMember(u);
 				} else if (idInfo[1].equals("Government")){
-<<<<<<< HEAD
+
 					u = new GovAgency(idInfo[3], d, idInfo[2]);
-=======
 					u = new GovAgency(idInfo[3],d, idInfo[2]);
 					d.addMember(u);
->>>>>>> origin/master
+
 				}
 				userDatabase.put(new BigInteger(idInfo[0]), u);
 				setIdCounter(highestId.toString());
@@ -156,12 +155,6 @@ public class AccessBase {
 		} catch (IOException io) {
 			io.printStackTrace();
 		}
-		
-<<<<<<< HEAD
-
-=======
-		
->>>>>>> origin/master
             
 	}
 	public void saveFile(){
