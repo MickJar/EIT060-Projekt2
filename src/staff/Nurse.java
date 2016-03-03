@@ -14,6 +14,11 @@ public class Nurse extends User {
 	public String getTitle() {
 		return TITLE;
 	}
+	
+	public boolean isDoctorOrNurse(){
+		return true;
+	}
+	
 	public ArrayList<String> getPatients() {
 		return patients;
 	}

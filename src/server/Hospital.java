@@ -37,28 +37,30 @@ public class Hospital {
 	public String handleClientInput(String clientMsg, User user) {
 		
 		String[] inputs = clientMsg.split(" ");
+		
+		String option = inputs.length>0 ? inputs[0]:"";
 		if (inputs.length > 1) {
 			String patientId = inputs[1];
 			if ((inputs[0].equals(READ_PATIENT_RECORD))) {
 				Logger.log(user.getId(), patientId, "Accessed Patient Records");
-				if (((user.getTitle().equals("Nurse") || user.getTitle().equals("Doctor"))
+				if ((user.isDoctorOrNurse()
 						&& user.getDivision().containsMember(patientId)) || user.getTitle().equals("Government")) {
 					return journalDatabase.readJournal(patientId) + "\n" + user.listOptions();
 				} else if (user.hasPatient(patientId)) {
 					return journalDatabase.getJournal(patientId, user.getId()).toString() + "\n\n"+ user.listOptions();
 				}
 
-			} else if (inputs[0].equals(WRITE_PATIENT_RECORD) && user.hasPatient(patientId)) {
-				Logger.log(user.getId(), inputs[1], "Wrote to Patient Record");
+			} else if (option.equals(WRITE_PATIENT_RECORD) && user.hasPatient(patientId)) {
+				Logger.log(user.getId(), patientId, "Wrote to Patient Record");
 				return ("Write information");
-			} else if (inputs[0].equals(CREATE_PATIENT_RECORD) && user instanceof Doctor) {
+			} else if (option.equals(CREATE_PATIENT_RECORD) && user instanceof Doctor) {
 				Logger.log(user.getId(), patientId, "Created Patient Records");
 				((Doctor) user).newPatient(patientId);
 				journalDatabase.newJournal(patientId, user.getId(), inputs[2]);
 				((Nurse) accessBase.getUserFromId(inputs[2])).addPatient(patientId);
 				Logger.log(user.getId(), patientId, "Created Patient Record");
 				return (("Journal created\n\n") + (user.listOptions()).toString());
-			} else if (inputs[0].equals(WRITE_PATIENT_RECORD_INFORMATION)) {
+			} else if (option.equals(WRITE_PATIENT_RECORD_INFORMATION)) {
 				patientId = inputs[2];
 				String information = "";
 				if (inputs.length > 3) {
@@ -73,12 +75,12 @@ public class Hospital {
 				}
 				journalDatabase.getJournal(patientId, user.getId()).addEntry(information, Logger.getDate());
 				Logger.log(user.getId(), patientId, "Wrote to Patient Record");
-			} else if (inputs[0].equals(DELETE_PATIENT_RECORD) && user.getTitle().equals("Government")) {
+			} else if (option.equals(DELETE_PATIENT_RECORD) && user.getTitle().equals("Government")) {
 				Logger.log(user.getId(), patientId, "Deleted Patient Records");
-				journalDatabase.deleteRecord(inputs[1]);
+				journalDatabase.deleteRecord(patientId);
 				Logger.log(user.getId(), patientId, "Deleted Patient Record");
 			}
-		} else if (inputs[0].equals(LIST_PATIENT_RECORDS)) {
+		} else if (option.equals(LIST_PATIENT_RECORDS) && user.isDoctorOrNurse()) {
 			String listRecords = "Patient:IDnumber:Name:Hospital: \n";
 			for (String patientId : user.getPatients()) {
 				System.out.println(patientId);
@@ -86,9 +88,9 @@ public class Hospital {
 
 				listRecords += accessBase.getUserFromId(patientId).toString() + "\n";
 			}
-			Logger.log(user.getId(), user.getName(), "Víewed Associated Patient records");
+			Logger.log(user.getId(), user.getName(), "Vï¿½ewed Associated Patient records");
 			return listRecords;
-		} else if (inputs[0].equals(LIST_DIVISION_RECORDS)) {
+		} else if (option.equals(LIST_DIVISION_RECORDS) && user.isDoctorOrNurse()) {
 			String divMembers = "Patient:IDnumber:Name:Hospital: \n";
 			for (User u : user.getDivision().getMembers()) {
 				if (u instanceof Patient) {
@@ -96,11 +98,11 @@ public class Hospital {
 				}
 
 			}
-			Logger.log(user.getId(), user.getDivision().toString(), "Víewed division Patient records");
+			Logger.log(user.getId(), user.getDivision().toString(), "Vï¿½ewed division Patient records");
 			return divMembers;
-		} else if (inputs[0].equals(READ_PATIENT_RECORD)) {
+		} else if (option.equals(READ_PATIENT_RECORD)) {
 			Logger.log(user.getId(), user.getName(), "Read patient record");
-			return journalDatabase.readJournal(user.getId());
+			return journalDatabase.readJournal(user.getId())+"\n"+user.listOptions();
 		}
 
 		return user.listOptions();

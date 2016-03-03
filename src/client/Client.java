@@ -1,6 +1,7 @@
 package client;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -37,8 +38,22 @@ public class Client {
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("Enter Username:");
 		msg[0] = read.readLine();
-		System.out.print("Enter Password:");
-		msg[1] = read.readLine();
+		
+		Console console;
+		
+		if((console =System.console()) != null){
+			char[] pass =console.readPassword("Enter password:");
+			String password = "";
+			for(char c: pass){
+				password+=c;
+			}
+			msg[1]=password;
+		} else {
+			
+			System.out.print("Enter Password:");
+			msg[1] = read.readLine();
+			
+		}
 		try { /* set up a key manager for client authentication */
 			SSLSocketFactory factory = null;
 			try {
@@ -111,5 +126,6 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
+	
 
 }
